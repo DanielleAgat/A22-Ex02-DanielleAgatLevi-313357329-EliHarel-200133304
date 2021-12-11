@@ -92,6 +92,12 @@ namespace BasicFacebookFeatures
                }
           }
 
+          public bool FetchListBox<T>(BindingSource i_PageBindingSource, ListBox io_ListBoxLikedPages, FacebookObjectCollection<T> i_Collection)
+          {
+            i_PageBindingSource.DataSource = i_Collection;
+            return i_Collection.Count > 0;
+          }
+
           public bool FetchListBox<T>(ListBox io_ListBox, FacebookObjectCollection<T> i_Collection)
           {
                io_ListBox.Items.Clear();
@@ -247,14 +253,16 @@ namespace BasicFacebookFeatures
                }
           }
 
-          public void FetchEvents(FacebookObjectCollection<Event> i_Events, ListBox i_EventsListBox)
+          public void FetchEvents(BindingSource i_EventBindingSource, FacebookObjectCollection<Event> i_Events, ListBox i_EventsListBox)
           {
-               i_EventsListBox.Items.Clear();
-               foreach (Event fbEvent in i_Events)
-               {
-                    i_EventsListBox.Items.Add(fbEvent);
-               }
+               // TODO: delete if all else works
+               //i_EventsListBox.Items.Clear();
+               //foreach (Event fbEvent in i_Events)
+               //{
+               //     i_EventsListBox.Items.Add(fbEvent);
+               //}
 
+               i_EventBindingSource.DataSource = i_Events;
                VisibilityManager.ChangeListBoxVisibilityAccordingToEmptiness(i_EventsListBox);
           }
 
@@ -290,5 +298,5 @@ namespace BasicFacebookFeatures
                     io_PictureBoxFriendProfilePic.Image = io_PictureBoxFriendProfilePic.ErrorImage;
                }
           }
-     }
+    }
 }
