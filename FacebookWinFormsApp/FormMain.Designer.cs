@@ -62,10 +62,11 @@ namespace BasicFacebookFeatures
             this.albumBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tabPageNewsFeed = new System.Windows.Forms.TabPage();
+            this.postBindingSourceNewsFeed = new System.Windows.Forms.BindingSource(this.components);
             this.labelNewsFeed = new System.Windows.Forms.Label();
             this.labelCommentsNewsFeed = new System.Windows.Forms.Label();
             this.listBoxNewsFeedComments = new System.Windows.Forms.ListBox();
-            this.listBoxNewsFeed = new System.Windows.Forms.ListBox();
+            this.listBoxNewsFeedOld = new System.Windows.Forms.ListBox();
             this.tabPagePosts = new System.Windows.Forms.TabPage();
             this.buttonPublish = new System.Windows.Forms.Button();
             this.labelWritePosts = new System.Windows.Forms.Label();
@@ -74,12 +75,22 @@ namespace BasicFacebookFeatures
             this.labelComments = new System.Windows.Forms.Label();
             this.listBoxPostComments = new System.Windows.Forms.ListBox();
             this.tabPageFriends = new System.Windows.Forms.TabPage();
-            this.wallPostsBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.panelUsersDetails = new System.Windows.Forms.Panel();
+            this.aboutLabel1 = new System.Windows.Forms.Label();
             this.userBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.birthdayLabel1 = new System.Windows.Forms.Label();
+            this.emailLabel1 = new System.Windows.Forms.Label();
+            this.imageLargePictureBox = new System.Windows.Forms.PictureBox();
+            this.nameLabel1 = new System.Windows.Forms.Label();
+            this.religionLabel1 = new System.Windows.Forms.Label();
             this.labelNoFriends = new System.Windows.Forms.Label();
             this.listBoxFriends = new System.Windows.Forms.ListBox();
             this.tabPageAlbums = new System.Windows.Forms.TabPage();
             this.panelAlbumDetails = new System.Windows.Forms.Panel();
+            this.createdTimeLabel1 = new System.Windows.Forms.Label();
+            this.descriptionTextBox2 = new System.Windows.Forms.TextBox();
+            this.imageAlbumPictureBox = new System.Windows.Forms.PictureBox();
+            this.locationTextBox1 = new System.Windows.Forms.TextBox();
             this.labelNoItemsAlbums = new System.Windows.Forms.Label();
             this.tabPageLikedPages = new System.Windows.Forms.TabPage();
             this.panelLikedPagesDetails = new System.Windows.Forms.Panel();
@@ -140,17 +151,7 @@ namespace BasicFacebookFeatures
             this.labelPermissions = new System.Windows.Forms.Label();
             this.checkBoxSelectAllPermissions = new System.Windows.Forms.CheckBox();
             this.checkBoxRememberUser = new System.Windows.Forms.CheckBox();
-            this.panelUsersDetails = new System.Windows.Forms.Panel();
-            this.religionLabel1 = new System.Windows.Forms.Label();
-            this.nameLabel1 = new System.Windows.Forms.Label();
-            this.imageLargePictureBox = new System.Windows.Forms.PictureBox();
-            this.aboutLabel1 = new System.Windows.Forms.Label();
-            this.emailLabel1 = new System.Windows.Forms.Label();
-            this.birthdayLabel1 = new System.Windows.Forms.Label();
-            this.createdTimeLabel1 = new System.Windows.Forms.Label();
-            this.descriptionTextBox2 = new System.Windows.Forms.TextBox();
-            this.imageAlbumPictureBox = new System.Windows.Forms.PictureBox();
-            this.locationTextBox1 = new System.Windows.Forms.TextBox();
+            this.commentBindingSource = new System.Windows.Forms.BindingSource(this.components);
             descriptionLabel = new System.Windows.Forms.Label();
             endTimeLabel = new System.Windows.Forms.Label();
             idLabel = new System.Windows.Forms.Label();
@@ -175,12 +176,15 @@ namespace BasicFacebookFeatures
             ((System.ComponentModel.ISupportInitialize)(this.albumBindingSource)).BeginInit();
             this.tabControlMain.SuspendLayout();
             this.tabPageNewsFeed.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.postBindingSourceNewsFeed)).BeginInit();
             this.tabPagePosts.SuspendLayout();
             this.tabPageFriends.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.wallPostsBindingSource)).BeginInit();
+            this.panelUsersDetails.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.userBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imageLargePictureBox)).BeginInit();
             this.tabPageAlbums.SuspendLayout();
             this.panelAlbumDetails.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imageAlbumPictureBox)).BeginInit();
             this.tabPageLikedPages.SuspendLayout();
             this.panelLikedPagesDetails.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pageBindingSource)).BeginInit();
@@ -199,9 +203,7 @@ namespace BasicFacebookFeatures
             this.tabPageGames.SuspendLayout();
             this.tabPageHoroscope.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.photosBindingSource)).BeginInit();
-            this.panelUsersDetails.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.imageLargePictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imageAlbumPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.commentBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // descriptionLabel
@@ -312,6 +314,78 @@ namespace BasicFacebookFeatures
             websiteLabel.TabIndex = 10;
             websiteLabel.Text = "Website:";
             // 
+            // religionLabel
+            // 
+            religionLabel.AutoSize = true;
+            religionLabel.Location = new System.Drawing.Point(237, 100);
+            religionLabel.Name = "religionLabel";
+            religionLabel.Size = new System.Drawing.Size(48, 13);
+            religionLabel.TabIndex = 10;
+            religionLabel.Text = "Religion:";
+            // 
+            // nameLabel
+            // 
+            nameLabel.AutoSize = true;
+            nameLabel.Location = new System.Drawing.Point(237, 8);
+            nameLabel.Name = "nameLabel";
+            nameLabel.Size = new System.Drawing.Size(38, 13);
+            nameLabel.TabIndex = 8;
+            nameLabel.Text = "Name:";
+            // 
+            // emailLabel
+            // 
+            emailLabel.AutoSize = true;
+            emailLabel.Location = new System.Drawing.Point(237, 77);
+            emailLabel.Name = "emailLabel";
+            emailLabel.Size = new System.Drawing.Size(35, 13);
+            emailLabel.TabIndex = 4;
+            emailLabel.Text = "Email:";
+            // 
+            // birthdayLabel
+            // 
+            birthdayLabel.AutoSize = true;
+            birthdayLabel.Location = new System.Drawing.Point(237, 54);
+            birthdayLabel.Name = "birthdayLabel";
+            birthdayLabel.Size = new System.Drawing.Size(48, 13);
+            birthdayLabel.TabIndex = 2;
+            birthdayLabel.Text = "Birthday:";
+            // 
+            // aboutLabel
+            // 
+            aboutLabel.AutoSize = true;
+            aboutLabel.Location = new System.Drawing.Point(237, 31);
+            aboutLabel.Name = "aboutLabel";
+            aboutLabel.Size = new System.Drawing.Size(38, 13);
+            aboutLabel.TabIndex = 0;
+            aboutLabel.Text = "About:";
+            // 
+            // createdTimeLabel
+            // 
+            createdTimeLabel.AutoSize = true;
+            createdTimeLabel.Location = new System.Drawing.Point(20, 273);
+            createdTimeLabel.Name = "createdTimeLabel";
+            createdTimeLabel.Size = new System.Drawing.Size(73, 13);
+            createdTimeLabel.TabIndex = 0;
+            createdTimeLabel.Text = "Created Time:";
+            // 
+            // descriptionLabel2
+            // 
+            descriptionLabel2.AutoSize = true;
+            descriptionLabel2.Location = new System.Drawing.Point(20, 214);
+            descriptionLabel2.Name = "descriptionLabel2";
+            descriptionLabel2.Size = new System.Drawing.Size(63, 13);
+            descriptionLabel2.TabIndex = 2;
+            descriptionLabel2.Text = "Description:";
+            // 
+            // locationLabel1
+            // 
+            locationLabel1.AutoSize = true;
+            locationLabel1.Location = new System.Drawing.Point(20, 240);
+            locationLabel1.Name = "locationLabel1";
+            locationLabel1.Size = new System.Drawing.Size(51, 13);
+            locationLabel1.TabIndex = 6;
+            locationLabel1.Text = "Location:";
+            // 
             // buttonLogin
             // 
             this.buttonLogin.Location = new System.Drawing.Point(8, 9);
@@ -352,9 +426,8 @@ namespace BasicFacebookFeatures
             this.listBoxPosts.Location = new System.Drawing.Point(10, 141);
             this.listBoxPosts.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.listBoxPosts.MaximumSize = new System.Drawing.Size(380, 356);
-            this.listBoxPosts.MinimumSize = new System.Drawing.Size(377, 314);
             this.listBoxPosts.Name = "listBoxPosts";
-            this.listBoxPosts.Size = new System.Drawing.Size(380, 303);
+            this.listBoxPosts.Size = new System.Drawing.Size(380, 277);
             this.listBoxPosts.TabIndex = 55;
             this.listBoxPosts.SelectedIndexChanged += new System.EventHandler(this.listBoxPosts_SelectedIndexChanged);
             // 
@@ -391,7 +464,7 @@ namespace BasicFacebookFeatures
             this.tabControlMain.Controls.Add(this.tabPageUserInfo);
             this.tabControlMain.Controls.Add(this.tabPageGames);
             this.tabControlMain.Controls.Add(this.tabPageHoroscope);
-            this.tabControlMain.Location = new System.Drawing.Point(132, 9);
+            this.tabControlMain.Location = new System.Drawing.Point(125, 9);
             this.tabControlMain.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.tabControlMain.Multiline = true;
             this.tabControlMain.Name = "tabControlMain";
@@ -402,22 +475,27 @@ namespace BasicFacebookFeatures
             // 
             // tabPageNewsFeed
             // 
+            this.tabPageNewsFeed.AutoScroll = true;
             this.tabPageNewsFeed.Controls.Add(this.labelNewsFeed);
             this.tabPageNewsFeed.Controls.Add(this.labelCommentsNewsFeed);
             this.tabPageNewsFeed.Controls.Add(this.listBoxNewsFeedComments);
-            this.tabPageNewsFeed.Controls.Add(this.listBoxNewsFeed);
+            this.tabPageNewsFeed.Controls.Add(this.listBoxNewsFeedOld);
             this.tabPageNewsFeed.Location = new System.Drawing.Point(4, 22);
             this.tabPageNewsFeed.Name = "tabPageNewsFeed";
             this.tabPageNewsFeed.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageNewsFeed.Size = new System.Drawing.Size(710, 651);
+            this.tabPageNewsFeed.Size = new System.Drawing.Size(706, 647);
             this.tabPageNewsFeed.TabIndex = 9;
             this.tabPageNewsFeed.Text = "Feed";
             this.tabPageNewsFeed.UseVisualStyleBackColor = true;
             // 
+            // postBindingSourceNewsFeed
+            // 
+            this.postBindingSourceNewsFeed.DataSource = typeof(FacebookWrapper.ObjectModel.Post);
+            // 
             // labelNewsFeed
             // 
             this.labelNewsFeed.AutoSize = true;
-            this.labelNewsFeed.Location = new System.Drawing.Point(5, 12);
+            this.labelNewsFeed.Location = new System.Drawing.Point(16, 9);
             this.labelNewsFeed.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelNewsFeed.Name = "labelNewsFeed";
             this.labelNewsFeed.Size = new System.Drawing.Size(61, 13);
@@ -427,7 +505,7 @@ namespace BasicFacebookFeatures
             // labelCommentsNewsFeed
             // 
             this.labelCommentsNewsFeed.AutoSize = true;
-            this.labelCommentsNewsFeed.Location = new System.Drawing.Point(392, 12);
+            this.labelCommentsNewsFeed.Location = new System.Drawing.Point(341, 9);
             this.labelCommentsNewsFeed.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelCommentsNewsFeed.Name = "labelCommentsNewsFeed";
             this.labelCommentsNewsFeed.Size = new System.Drawing.Size(56, 13);
@@ -436,31 +514,30 @@ namespace BasicFacebookFeatures
             // 
             // listBoxNewsFeedComments
             // 
+            this.listBoxNewsFeedComments.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.listBoxNewsFeedComments.FormattingEnabled = true;
             this.listBoxNewsFeedComments.HorizontalScrollbar = true;
-            this.listBoxNewsFeedComments.Location = new System.Drawing.Point(395, 27);
+            this.listBoxNewsFeedComments.Location = new System.Drawing.Point(344, 25);
             this.listBoxNewsFeedComments.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.listBoxNewsFeedComments.MaximumSize = new System.Drawing.Size(187, 356);
-            this.listBoxNewsFeedComments.MinimumSize = new System.Drawing.Size(152, 314);
             this.listBoxNewsFeedComments.Name = "listBoxNewsFeedComments";
-            this.listBoxNewsFeedComments.Size = new System.Drawing.Size(187, 342);
+            this.listBoxNewsFeedComments.Size = new System.Drawing.Size(319, 368);
             this.listBoxNewsFeedComments.TabIndex = 61;
             // 
-            // listBoxNewsFeed
+            // listBoxNewsFeedOld
             // 
-            this.listBoxNewsFeed.AccessibleName = "";
-            this.listBoxNewsFeed.FormattingEnabled = true;
-            this.listBoxNewsFeed.Location = new System.Drawing.Point(5, 27);
-            this.listBoxNewsFeed.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.listBoxNewsFeed.MaximumSize = new System.Drawing.Size(380, 356);
-            this.listBoxNewsFeed.MinimumSize = new System.Drawing.Size(377, 314);
-            this.listBoxNewsFeed.Name = "listBoxNewsFeed";
-            this.listBoxNewsFeed.Size = new System.Drawing.Size(380, 342);
-            this.listBoxNewsFeed.TabIndex = 60;
-            this.listBoxNewsFeed.SelectedIndexChanged += new System.EventHandler(this.listBoxNewsFeed_SelectedIndexChanged);
+            this.listBoxNewsFeedOld.AccessibleName = "";
+            this.listBoxNewsFeedOld.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.listBoxNewsFeedOld.FormattingEnabled = true;
+            this.listBoxNewsFeedOld.Location = new System.Drawing.Point(19, 25);
+            this.listBoxNewsFeedOld.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.listBoxNewsFeedOld.Name = "listBoxNewsFeedOld";
+            this.listBoxNewsFeedOld.Size = new System.Drawing.Size(305, 368);
+            this.listBoxNewsFeedOld.TabIndex = 60;
+            this.listBoxNewsFeedOld.SelectedIndexChanged += new System.EventHandler(this.listBoxNewsFeed_SelectedIndexChanged);
             // 
             // tabPagePosts
             // 
+            this.tabPagePosts.AutoScroll = true;
             this.tabPagePosts.Controls.Add(this.buttonPublish);
             this.tabPagePosts.Controls.Add(this.labelWritePosts);
             this.tabPagePosts.Controls.Add(this.labelPosts);
@@ -472,7 +549,7 @@ namespace BasicFacebookFeatures
             this.tabPagePosts.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.tabPagePosts.Name = "tabPagePosts";
             this.tabPagePosts.Padding = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.tabPagePosts.Size = new System.Drawing.Size(651, 454);
+            this.tabPagePosts.Size = new System.Drawing.Size(706, 647);
             this.tabPagePosts.TabIndex = 1;
             this.tabPagePosts.Text = "Posts";
             this.tabPagePosts.UseVisualStyleBackColor = true;
@@ -538,9 +615,8 @@ namespace BasicFacebookFeatures
             this.listBoxPostComments.Location = new System.Drawing.Point(400, 141);
             this.listBoxPostComments.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.listBoxPostComments.MaximumSize = new System.Drawing.Size(187, 356);
-            this.listBoxPostComments.MinimumSize = new System.Drawing.Size(152, 314);
             this.listBoxPostComments.Name = "listBoxPostComments";
-            this.listBoxPostComments.Size = new System.Drawing.Size(187, 303);
+            this.listBoxPostComments.Size = new System.Drawing.Size(187, 277);
             this.listBoxPostComments.TabIndex = 56;
             // 
             // tabPageFriends
@@ -557,14 +633,81 @@ namespace BasicFacebookFeatures
             this.tabPageFriends.Text = "Friends";
             this.tabPageFriends.UseVisualStyleBackColor = true;
             // 
-            // wallPostsBindingSource
+            // panelUsersDetails
             // 
-            this.wallPostsBindingSource.DataMember = "WallPosts";
-            this.wallPostsBindingSource.DataSource = this.userBindingSource;
+            this.panelUsersDetails.Controls.Add(aboutLabel);
+            this.panelUsersDetails.Controls.Add(this.aboutLabel1);
+            this.panelUsersDetails.Controls.Add(birthdayLabel);
+            this.panelUsersDetails.Controls.Add(this.birthdayLabel1);
+            this.panelUsersDetails.Controls.Add(emailLabel);
+            this.panelUsersDetails.Controls.Add(this.emailLabel1);
+            this.panelUsersDetails.Controls.Add(this.imageLargePictureBox);
+            this.panelUsersDetails.Controls.Add(nameLabel);
+            this.panelUsersDetails.Controls.Add(this.nameLabel1);
+            this.panelUsersDetails.Controls.Add(religionLabel);
+            this.panelUsersDetails.Controls.Add(this.religionLabel1);
+            this.panelUsersDetails.Location = new System.Drawing.Point(149, 6);
+            this.panelUsersDetails.Name = "panelUsersDetails";
+            this.panelUsersDetails.Size = new System.Drawing.Size(551, 304);
+            this.panelUsersDetails.TabIndex = 3;
+            // 
+            // aboutLabel1
+            // 
+            this.aboutLabel1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.userBindingSource, "About", true));
+            this.aboutLabel1.Location = new System.Drawing.Point(312, 31);
+            this.aboutLabel1.Name = "aboutLabel1";
+            this.aboutLabel1.Size = new System.Drawing.Size(100, 23);
+            this.aboutLabel1.TabIndex = 1;
+            this.aboutLabel1.Text = "label1";
             // 
             // userBindingSource
             // 
             this.userBindingSource.DataSource = typeof(FacebookWrapper.ObjectModel.User);
+            // 
+            // birthdayLabel1
+            // 
+            this.birthdayLabel1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.userBindingSource, "Birthday", true));
+            this.birthdayLabel1.Location = new System.Drawing.Point(312, 54);
+            this.birthdayLabel1.Name = "birthdayLabel1";
+            this.birthdayLabel1.Size = new System.Drawing.Size(100, 23);
+            this.birthdayLabel1.TabIndex = 3;
+            this.birthdayLabel1.Text = "label1";
+            // 
+            // emailLabel1
+            // 
+            this.emailLabel1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.userBindingSource, "Email", true));
+            this.emailLabel1.Location = new System.Drawing.Point(312, 77);
+            this.emailLabel1.Name = "emailLabel1";
+            this.emailLabel1.Size = new System.Drawing.Size(100, 23);
+            this.emailLabel1.TabIndex = 5;
+            this.emailLabel1.Text = "label1";
+            // 
+            // imageLargePictureBox
+            // 
+            this.imageLargePictureBox.DataBindings.Add(new System.Windows.Forms.Binding("Image", this.userBindingSource, "ImageLarge", true));
+            this.imageLargePictureBox.Location = new System.Drawing.Point(15, 5);
+            this.imageLargePictureBox.Name = "imageLargePictureBox";
+            this.imageLargePictureBox.Size = new System.Drawing.Size(200, 200);
+            this.imageLargePictureBox.TabIndex = 7;
+            this.imageLargePictureBox.TabStop = false;
+            // 
+            // nameLabel1
+            // 
+            this.nameLabel1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.userBindingSource, "Name", true));
+            this.nameLabel1.Location = new System.Drawing.Point(312, 8);
+            this.nameLabel1.Name = "nameLabel1";
+            this.nameLabel1.Size = new System.Drawing.Size(100, 23);
+            this.nameLabel1.TabIndex = 9;
+            this.nameLabel1.Text = "label1";
+            // 
+            // religionLabel1
+            // 
+            this.religionLabel1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.userBindingSource, "Religion", true));
+            this.religionLabel1.Location = new System.Drawing.Point(312, 100);
+            this.religionLabel1.Name = "religionLabel1";
+            this.religionLabel1.Size = new System.Drawing.Size(100, 23);
+            this.religionLabel1.TabIndex = 11;
+            this.religionLabel1.Text = "label1";
             // 
             // labelNoFriends
             // 
@@ -619,6 +762,40 @@ namespace BasicFacebookFeatures
             this.panelAlbumDetails.Size = new System.Drawing.Size(380, 437);
             this.panelAlbumDetails.TabIndex = 59;
             // 
+            // createdTimeLabel1
+            // 
+            this.createdTimeLabel1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.albumBindingSource, "CreatedTime", true));
+            this.createdTimeLabel1.Location = new System.Drawing.Point(99, 273);
+            this.createdTimeLabel1.Name = "createdTimeLabel1";
+            this.createdTimeLabel1.Size = new System.Drawing.Size(100, 23);
+            this.createdTimeLabel1.TabIndex = 1;
+            this.createdTimeLabel1.Text = "label1";
+            // 
+            // descriptionTextBox2
+            // 
+            this.descriptionTextBox2.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.albumBindingSource, "Description", true));
+            this.descriptionTextBox2.Location = new System.Drawing.Point(99, 211);
+            this.descriptionTextBox2.Name = "descriptionTextBox2";
+            this.descriptionTextBox2.Size = new System.Drawing.Size(100, 20);
+            this.descriptionTextBox2.TabIndex = 3;
+            // 
+            // imageAlbumPictureBox
+            // 
+            this.imageAlbumPictureBox.DataBindings.Add(new System.Windows.Forms.Binding("Image", this.albumBindingSource, "ImageAlbum", true));
+            this.imageAlbumPictureBox.Location = new System.Drawing.Point(15, 5);
+            this.imageAlbumPictureBox.Name = "imageAlbumPictureBox";
+            this.imageAlbumPictureBox.Size = new System.Drawing.Size(200, 200);
+            this.imageAlbumPictureBox.TabIndex = 5;
+            this.imageAlbumPictureBox.TabStop = false;
+            // 
+            // locationTextBox1
+            // 
+            this.locationTextBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.albumBindingSource, "Location", true));
+            this.locationTextBox1.Location = new System.Drawing.Point(99, 237);
+            this.locationTextBox1.Name = "locationTextBox1";
+            this.locationTextBox1.Size = new System.Drawing.Size(100, 20);
+            this.locationTextBox1.TabIndex = 7;
+            // 
             // labelNoItemsAlbums
             // 
             this.labelNoItemsAlbums.AutoSize = true;
@@ -640,7 +817,7 @@ namespace BasicFacebookFeatures
             this.tabPageLikedPages.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.tabPageLikedPages.Name = "tabPageLikedPages";
             this.tabPageLikedPages.Padding = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.tabPageLikedPages.Size = new System.Drawing.Size(651, 454);
+            this.tabPageLikedPages.Size = new System.Drawing.Size(706, 647);
             this.tabPageLikedPages.TabIndex = 4;
             this.tabPageLikedPages.Text = "Liked Pages";
             this.tabPageLikedPages.UseVisualStyleBackColor = true;
@@ -755,7 +932,7 @@ namespace BasicFacebookFeatures
             this.tabPageEvents.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.tabPageEvents.Name = "tabPageEvents";
             this.tabPageEvents.Padding = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.tabPageEvents.Size = new System.Drawing.Size(651, 454);
+            this.tabPageEvents.Size = new System.Drawing.Size(706, 647);
             this.tabPageEvents.TabIndex = 5;
             this.tabPageEvents.Text = "Events";
             this.tabPageEvents.UseVisualStyleBackColor = true;
@@ -888,7 +1065,7 @@ namespace BasicFacebookFeatures
             this.tabPageEventsCreated.Location = new System.Drawing.Point(4, 22);
             this.tabPageEventsCreated.Name = "tabPageEventsCreated";
             this.tabPageEventsCreated.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageEventsCreated.Size = new System.Drawing.Size(331, 613);
+            this.tabPageEventsCreated.Size = new System.Drawing.Size(278, 394);
             this.tabPageEventsCreated.TabIndex = 1;
             this.tabPageEventsCreated.Text = "Created";
             this.tabPageEventsCreated.UseVisualStyleBackColor = true;
@@ -905,7 +1082,7 @@ namespace BasicFacebookFeatures
             this.listBoxEventsCreated.Location = new System.Drawing.Point(3, 3);
             this.listBoxEventsCreated.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.listBoxEventsCreated.Name = "listBoxEventsCreated";
-            this.listBoxEventsCreated.Size = new System.Drawing.Size(323, 602);
+            this.listBoxEventsCreated.Size = new System.Drawing.Size(270, 381);
             this.listBoxEventsCreated.TabIndex = 4;
             // 
             // tabPageEventsDeclined
@@ -914,7 +1091,7 @@ namespace BasicFacebookFeatures
             this.tabPageEventsDeclined.Location = new System.Drawing.Point(4, 22);
             this.tabPageEventsDeclined.Name = "tabPageEventsDeclined";
             this.tabPageEventsDeclined.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageEventsDeclined.Size = new System.Drawing.Size(331, 613);
+            this.tabPageEventsDeclined.Size = new System.Drawing.Size(278, 394);
             this.tabPageEventsDeclined.TabIndex = 2;
             this.tabPageEventsDeclined.Text = "Declined";
             this.tabPageEventsDeclined.UseVisualStyleBackColor = true;
@@ -931,7 +1108,7 @@ namespace BasicFacebookFeatures
             this.listBoxEventsDeclinde.Location = new System.Drawing.Point(3, 3);
             this.listBoxEventsDeclinde.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.listBoxEventsDeclinde.Name = "listBoxEventsDeclinde";
-            this.listBoxEventsDeclinde.Size = new System.Drawing.Size(323, 602);
+            this.listBoxEventsDeclinde.Size = new System.Drawing.Size(270, 381);
             this.listBoxEventsDeclinde.TabIndex = 6;
             // 
             // tabPageEventsMaybe
@@ -940,7 +1117,7 @@ namespace BasicFacebookFeatures
             this.tabPageEventsMaybe.Location = new System.Drawing.Point(4, 22);
             this.tabPageEventsMaybe.Name = "tabPageEventsMaybe";
             this.tabPageEventsMaybe.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageEventsMaybe.Size = new System.Drawing.Size(331, 613);
+            this.tabPageEventsMaybe.Size = new System.Drawing.Size(278, 394);
             this.tabPageEventsMaybe.TabIndex = 3;
             this.tabPageEventsMaybe.Text = "Maybe";
             this.tabPageEventsMaybe.UseVisualStyleBackColor = true;
@@ -957,7 +1134,7 @@ namespace BasicFacebookFeatures
             this.listBoxEventsMaybe.Location = new System.Drawing.Point(3, 3);
             this.listBoxEventsMaybe.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.listBoxEventsMaybe.Name = "listBoxEventsMaybe";
-            this.listBoxEventsMaybe.Size = new System.Drawing.Size(323, 602);
+            this.listBoxEventsMaybe.Size = new System.Drawing.Size(270, 381);
             this.listBoxEventsMaybe.TabIndex = 6;
             // 
             // tabPageEventsNotYetReplied
@@ -966,7 +1143,7 @@ namespace BasicFacebookFeatures
             this.tabPageEventsNotYetReplied.Location = new System.Drawing.Point(4, 22);
             this.tabPageEventsNotYetReplied.Name = "tabPageEventsNotYetReplied";
             this.tabPageEventsNotYetReplied.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageEventsNotYetReplied.Size = new System.Drawing.Size(331, 613);
+            this.tabPageEventsNotYetReplied.Size = new System.Drawing.Size(278, 394);
             this.tabPageEventsNotYetReplied.TabIndex = 4;
             this.tabPageEventsNotYetReplied.Text = "Not Yet Replied";
             this.tabPageEventsNotYetReplied.UseVisualStyleBackColor = true;
@@ -983,7 +1160,7 @@ namespace BasicFacebookFeatures
             this.listBoxEventsNotYetReplied.Location = new System.Drawing.Point(3, 3);
             this.listBoxEventsNotYetReplied.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.listBoxEventsNotYetReplied.Name = "listBoxEventsNotYetReplied";
-            this.listBoxEventsNotYetReplied.Size = new System.Drawing.Size(323, 602);
+            this.listBoxEventsNotYetReplied.Size = new System.Drawing.Size(270, 381);
             this.listBoxEventsNotYetReplied.TabIndex = 6;
             // 
             // tabPageUserInfo
@@ -1004,7 +1181,7 @@ namespace BasicFacebookFeatures
             this.tabPageUserInfo.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.tabPageUserInfo.Name = "tabPageUserInfo";
             this.tabPageUserInfo.Padding = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.tabPageUserInfo.Size = new System.Drawing.Size(651, 454);
+            this.tabPageUserInfo.Size = new System.Drawing.Size(706, 647);
             this.tabPageUserInfo.TabIndex = 3;
             this.tabPageUserInfo.Text = "User Info";
             this.tabPageUserInfo.UseVisualStyleBackColor = true;
@@ -1131,7 +1308,7 @@ namespace BasicFacebookFeatures
             this.tabPageGames.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.tabPageGames.Name = "tabPageGames";
             this.tabPageGames.Padding = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.tabPageGames.Size = new System.Drawing.Size(651, 454);
+            this.tabPageGames.Size = new System.Drawing.Size(706, 647);
             this.tabPageGames.TabIndex = 6;
             this.tabPageGames.Text = "Games";
             this.tabPageGames.UseVisualStyleBackColor = true;
@@ -1171,7 +1348,7 @@ namespace BasicFacebookFeatures
             this.tabPageHoroscope.Margin = new System.Windows.Forms.Padding(2);
             this.tabPageHoroscope.Name = "tabPageHoroscope";
             this.tabPageHoroscope.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPageHoroscope.Size = new System.Drawing.Size(651, 454);
+            this.tabPageHoroscope.Size = new System.Drawing.Size(706, 647);
             this.tabPageHoroscope.TabIndex = 7;
             this.tabPageHoroscope.Text = "Horoscope";
             this.tabPageHoroscope.UseVisualStyleBackColor = true;
@@ -1285,183 +1462,9 @@ namespace BasicFacebookFeatures
             this.checkBoxRememberUser.Text = "Remember Me";
             this.checkBoxRememberUser.UseVisualStyleBackColor = true;
             // 
-            // panelUsersDetails
+            // commentBindingSource
             // 
-            this.panelUsersDetails.Controls.Add(aboutLabel);
-            this.panelUsersDetails.Controls.Add(this.aboutLabel1);
-            this.panelUsersDetails.Controls.Add(birthdayLabel);
-            this.panelUsersDetails.Controls.Add(this.birthdayLabel1);
-            this.panelUsersDetails.Controls.Add(emailLabel);
-            this.panelUsersDetails.Controls.Add(this.emailLabel1);
-            this.panelUsersDetails.Controls.Add(this.imageLargePictureBox);
-            this.panelUsersDetails.Controls.Add(nameLabel);
-            this.panelUsersDetails.Controls.Add(this.nameLabel1);
-            this.panelUsersDetails.Controls.Add(religionLabel);
-            this.panelUsersDetails.Controls.Add(this.religionLabel1);
-            this.panelUsersDetails.Location = new System.Drawing.Point(149, 6);
-            this.panelUsersDetails.Name = "panelUsersDetails";
-            this.panelUsersDetails.Size = new System.Drawing.Size(551, 304);
-            this.panelUsersDetails.TabIndex = 3;
-            // 
-            // religionLabel1
-            // 
-            this.religionLabel1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.userBindingSource, "Religion", true));
-            this.religionLabel1.Location = new System.Drawing.Point(312, 100);
-            this.religionLabel1.Name = "religionLabel1";
-            this.religionLabel1.Size = new System.Drawing.Size(100, 23);
-            this.religionLabel1.TabIndex = 11;
-            this.religionLabel1.Text = "label1";
-            // 
-            // religionLabel
-            // 
-            religionLabel.AutoSize = true;
-            religionLabel.Location = new System.Drawing.Point(237, 100);
-            religionLabel.Name = "religionLabel";
-            religionLabel.Size = new System.Drawing.Size(48, 13);
-            religionLabel.TabIndex = 10;
-            religionLabel.Text = "Religion:";
-            // 
-            // nameLabel1
-            // 
-            this.nameLabel1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.userBindingSource, "Name", true));
-            this.nameLabel1.Location = new System.Drawing.Point(312, 8);
-            this.nameLabel1.Name = "nameLabel1";
-            this.nameLabel1.Size = new System.Drawing.Size(100, 23);
-            this.nameLabel1.TabIndex = 9;
-            this.nameLabel1.Text = "label1";
-            // 
-            // nameLabel
-            // 
-            nameLabel.AutoSize = true;
-            nameLabel.Location = new System.Drawing.Point(237, 8);
-            nameLabel.Name = "nameLabel";
-            nameLabel.Size = new System.Drawing.Size(38, 13);
-            nameLabel.TabIndex = 8;
-            nameLabel.Text = "Name:";
-            // 
-            // imageLargePictureBox
-            // 
-            this.imageLargePictureBox.DataBindings.Add(new System.Windows.Forms.Binding("Image", this.userBindingSource, "ImageLarge", true));
-            this.imageLargePictureBox.Location = new System.Drawing.Point(15, 5);
-            this.imageLargePictureBox.Name = "imageLargePictureBox";
-            this.imageLargePictureBox.Size = new System.Drawing.Size(200, 200);
-            this.imageLargePictureBox.TabIndex = 7;
-            this.imageLargePictureBox.TabStop = false;
-            // 
-            // aboutLabel1
-            // 
-            this.aboutLabel1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.userBindingSource, "About", true));
-            this.aboutLabel1.Location = new System.Drawing.Point(312, 31);
-            this.aboutLabel1.Name = "aboutLabel1";
-            this.aboutLabel1.Size = new System.Drawing.Size(100, 23);
-            this.aboutLabel1.TabIndex = 1;
-            this.aboutLabel1.Text = "label1";
-            // 
-            // emailLabel1
-            // 
-            this.emailLabel1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.userBindingSource, "Email", true));
-            this.emailLabel1.Location = new System.Drawing.Point(312, 77);
-            this.emailLabel1.Name = "emailLabel1";
-            this.emailLabel1.Size = new System.Drawing.Size(100, 23);
-            this.emailLabel1.TabIndex = 5;
-            this.emailLabel1.Text = "label1";
-            // 
-            // emailLabel
-            // 
-            emailLabel.AutoSize = true;
-            emailLabel.Location = new System.Drawing.Point(237, 77);
-            emailLabel.Name = "emailLabel";
-            emailLabel.Size = new System.Drawing.Size(35, 13);
-            emailLabel.TabIndex = 4;
-            emailLabel.Text = "Email:";
-            // 
-            // birthdayLabel1
-            // 
-            this.birthdayLabel1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.userBindingSource, "Birthday", true));
-            this.birthdayLabel1.Location = new System.Drawing.Point(312, 54);
-            this.birthdayLabel1.Name = "birthdayLabel1";
-            this.birthdayLabel1.Size = new System.Drawing.Size(100, 23);
-            this.birthdayLabel1.TabIndex = 3;
-            this.birthdayLabel1.Text = "label1";
-            // 
-            // birthdayLabel
-            // 
-            birthdayLabel.AutoSize = true;
-            birthdayLabel.Location = new System.Drawing.Point(237, 54);
-            birthdayLabel.Name = "birthdayLabel";
-            birthdayLabel.Size = new System.Drawing.Size(48, 13);
-            birthdayLabel.TabIndex = 2;
-            birthdayLabel.Text = "Birthday:";
-            // 
-            // aboutLabel
-            // 
-            aboutLabel.AutoSize = true;
-            aboutLabel.Location = new System.Drawing.Point(237, 31);
-            aboutLabel.Name = "aboutLabel";
-            aboutLabel.Size = new System.Drawing.Size(38, 13);
-            aboutLabel.TabIndex = 0;
-            aboutLabel.Text = "About:";
-            // 
-            // createdTimeLabel
-            // 
-            createdTimeLabel.AutoSize = true;
-            createdTimeLabel.Location = new System.Drawing.Point(20, 273);
-            createdTimeLabel.Name = "createdTimeLabel";
-            createdTimeLabel.Size = new System.Drawing.Size(73, 13);
-            createdTimeLabel.TabIndex = 0;
-            createdTimeLabel.Text = "Created Time:";
-            // 
-            // createdTimeLabel1
-            // 
-            this.createdTimeLabel1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.albumBindingSource, "CreatedTime", true));
-            this.createdTimeLabel1.Location = new System.Drawing.Point(99, 273);
-            this.createdTimeLabel1.Name = "createdTimeLabel1";
-            this.createdTimeLabel1.Size = new System.Drawing.Size(100, 23);
-            this.createdTimeLabel1.TabIndex = 1;
-            this.createdTimeLabel1.Text = "label1";
-            // 
-            // descriptionLabel2
-            // 
-            descriptionLabel2.AutoSize = true;
-            descriptionLabel2.Location = new System.Drawing.Point(20, 214);
-            descriptionLabel2.Name = "descriptionLabel2";
-            descriptionLabel2.Size = new System.Drawing.Size(63, 13);
-            descriptionLabel2.TabIndex = 2;
-            descriptionLabel2.Text = "Description:";
-            // 
-            // descriptionTextBox2
-            // 
-            this.descriptionTextBox2.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.albumBindingSource, "Description", true));
-            this.descriptionTextBox2.Location = new System.Drawing.Point(99, 211);
-            this.descriptionTextBox2.Name = "descriptionTextBox2";
-            this.descriptionTextBox2.Size = new System.Drawing.Size(100, 20);
-            this.descriptionTextBox2.TabIndex = 3;
-            // 
-            // imageAlbumPictureBox
-            // 
-            this.imageAlbumPictureBox.DataBindings.Add(new System.Windows.Forms.Binding("Image", this.albumBindingSource, "ImageAlbum", true));
-            this.imageAlbumPictureBox.Location = new System.Drawing.Point(15, 5);
-            this.imageAlbumPictureBox.Name = "imageAlbumPictureBox";
-            this.imageAlbumPictureBox.Size = new System.Drawing.Size(200, 200);
-            this.imageAlbumPictureBox.TabIndex = 5;
-            this.imageAlbumPictureBox.TabStop = false;
-            // 
-            // locationLabel1
-            // 
-            locationLabel1.AutoSize = true;
-            locationLabel1.Location = new System.Drawing.Point(20, 240);
-            locationLabel1.Name = "locationLabel1";
-            locationLabel1.Size = new System.Drawing.Size(51, 13);
-            locationLabel1.TabIndex = 6;
-            locationLabel1.Text = "Location:";
-            // 
-            // locationTextBox1
-            // 
-            this.locationTextBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.albumBindingSource, "Location", true));
-            this.locationTextBox1.Location = new System.Drawing.Point(99, 237);
-            this.locationTextBox1.Name = "locationTextBox1";
-            this.locationTextBox1.Size = new System.Drawing.Size(100, 20);
-            this.locationTextBox1.TabIndex = 7;
+            this.commentBindingSource.DataSource = typeof(FacebookWrapper.ObjectModel.Comment);
             // 
             // FormMain
             // 
@@ -1488,16 +1491,20 @@ namespace BasicFacebookFeatures
             this.tabControlMain.ResumeLayout(false);
             this.tabPageNewsFeed.ResumeLayout(false);
             this.tabPageNewsFeed.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.postBindingSourceNewsFeed)).EndInit();
             this.tabPagePosts.ResumeLayout(false);
             this.tabPagePosts.PerformLayout();
             this.tabPageFriends.ResumeLayout(false);
             this.tabPageFriends.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.wallPostsBindingSource)).EndInit();
+            this.panelUsersDetails.ResumeLayout(false);
+            this.panelUsersDetails.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.userBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imageLargePictureBox)).EndInit();
             this.tabPageAlbums.ResumeLayout(false);
             this.tabPageAlbums.PerformLayout();
             this.panelAlbumDetails.ResumeLayout(false);
             this.panelAlbumDetails.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imageAlbumPictureBox)).EndInit();
             this.tabPageLikedPages.ResumeLayout(false);
             this.tabPageLikedPages.PerformLayout();
             this.panelLikedPagesDetails.ResumeLayout(false);
@@ -1522,10 +1529,7 @@ namespace BasicFacebookFeatures
             this.tabPageHoroscope.ResumeLayout(false);
             this.tabPageHoroscope.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.photosBindingSource)).EndInit();
-            this.panelUsersDetails.ResumeLayout(false);
-            this.panelUsersDetails.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.imageLargePictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imageAlbumPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.commentBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1577,7 +1581,7 @@ namespace BasicFacebookFeatures
           private Label labelNewsFeed;
           private Label labelCommentsNewsFeed;
           private ListBox listBoxNewsFeedComments;
-          private ListBox listBoxNewsFeed;
+          private ListBox listBoxNewsFeedOld;
           private TabControl tabControlEvents;
           private TabPage tabPageEventsEvents;
           private TabPage tabPageEventsCreated;
@@ -1617,7 +1621,6 @@ namespace BasicFacebookFeatures
         private Panel panelAlbumDetails;
         private BindingSource albumBindingSource;
         private BindingSource userBindingSource;
-        private BindingSource wallPostsBindingSource;
         private BindingSource photosBindingSource;
         private Panel panelUsersDetails;
         private Label aboutLabel1;
@@ -1630,6 +1633,8 @@ namespace BasicFacebookFeatures
         private TextBox descriptionTextBox2;
         private PictureBox imageAlbumPictureBox;
         private TextBox locationTextBox1;
+        private BindingSource commentBindingSource;
+        private BindingSource postBindingSourceNewsFeed;
     }
 }
 

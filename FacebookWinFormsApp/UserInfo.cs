@@ -48,8 +48,26 @@ namespace BasicFacebookFeatures
         {
             if (m_LoggedInUser != null)
             {
-                io_ListBoxNewsFeed.Items.Clear();
-                addPostsToListBox(ref io_ListBoxNewsFeed, m_LoggedInUser.NewsFeed);
+                // io_ListBoxNewsFeed.Items.Clear(); // Old, pre-threads
+
+                io_ListBoxNewsFeed.Invoke(new Action( () => io_ListBoxNewsFeed.Items.Clear()));
+
+                //addPostsToListBox(ref io_ListBoxNewsFeed, m_LoggedInUser.NewsFeed);
+                addPostsToListBox(io_ListBoxNewsFeed, m_LoggedInUser.NewsFeed); // Trying without "ref", because threads didn't allow it
+
+            }
+        }
+
+        private void addPostsToListBox(ListBox io_ListBox, FacebookObjectCollection<Post> i_Posts)
+        {
+            foreach (Post post in i_Posts)
+            {
+                if (post.Message != null)
+                {
+                    // io_ListBox.Items.Add(post.Message);
+
+                    io_ListBox.Invoke(new Action(() => io_ListBox.Items.Add(post.Message)));
+                }
             }
         }
 

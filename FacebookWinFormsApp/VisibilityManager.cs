@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace BasicFacebookFeatures
@@ -15,10 +16,12 @@ namespace BasicFacebookFeatures
 
         public static void ChangeTabVisibility(Control[] i_Controls, Label i_LabelNoItems, bool i_IsFetchSucceeded)
         {
-            i_LabelNoItems.Visible = !i_IsFetchSucceeded;
+            // i_LabelNoItems.Visible = !i_IsFetchSucceeded; // Old, pre-threads, delete if all works
+            i_LabelNoItems.Invoke(new Action( () => i_LabelNoItems.Visible = !i_IsFetchSucceeded));
             foreach (Control control in i_Controls)
             {
-                control.Visible = i_IsFetchSucceeded;
+                control.Invoke(new Action( () => control.Visible = i_IsFetchSucceeded));
+                // control.Visible = i_IsFetchSucceeded; // Old, pre-threads, delete if all works
             }
         }
 

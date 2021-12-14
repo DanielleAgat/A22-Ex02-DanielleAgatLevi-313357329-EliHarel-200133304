@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Threading;
 using FacebookWrapper.ObjectModel;
 using FacebookWrapper;
 using CheckersUIWindows;
@@ -54,7 +55,14 @@ namespace BasicFacebookFeatures
 
             FacebookService.s_CollectionLimit = 100;
             changeControlsVisibilityAccordingToState(!r_LoginState);
+        }
+
+        protected override void OnShown(EventArgs i_EventArgs)
+        {
+            // Perform the connect only after the form is shown.
             loadAppSettings();
+
+            base.OnShown(i_EventArgs);
         }
 
         private void loadAppSettings()
@@ -101,7 +109,67 @@ namespace BasicFacebookFeatures
             changeLoginButtonAccordingToState(!r_LoginState);
             changeControlsVisibilityAccordingToState(r_LoginState);
             pictureBoxProfilePic.LoadAsync(m_UserInfo.LoggedInUser.PictureNormalURL);
-            m_UserInfo.FetchNewsFeed(listBoxNewsFeed);
+            // m_UserInfo.FetchNewsFeed(listBoxNewsFeedOld);
+
+
+            // TODO: temp code to experiment with threads
+            new Thread(fetchNewsFeed).Start();
+            new Thread(fetchPosts).Start();
+            new Thread(fetchFriends).Start();
+            new Thread(fetchAlbums).Start();
+            new Thread(fetchLikedPages).Start();
+            new Thread(fetchEvents).Start();
+            new Thread(fetchUserInfo).Start();
+            new Thread(fetchHoroscope).Start();
+        }
+
+        private void fetchNewsFeed()
+        {
+            m_UserInfo.FetchNewsFeed(listBoxNewsFeedOld);
+        }
+
+        private void fetchPosts()
+        {
+            m_UserInfo.FetchPosts(listBoxPosts);
+        }
+
+        private void fetchFriends()
+        {
+            bool isAnyFriendsFetched = m_UserInfo.FetchListBox(userBindingSource, listBoxFriends, m_UserInfo.LoggedInUser.Friends);
+
+            VisibilityManager.ChangeTabVisibility(r_FriendsControls, labelNoFriends, isAnyFriendsFetched);
+        }
+
+        private void fetchAlbums()
+        {
+            bool isAnyAlbumsFetched = m_UserInfo.FetchListBox(albumBindingSource, listBoxAlbums, m_UserInfo.LoggedInUser.Albums);
+
+            VisibilityManager.ChangeTabVisibility(r_AlbumsControls, labelNoItemsAlbums, isAnyAlbumsFetched);
+        }
+
+        private void fetchLikedPages()
+        {
+            bool isAnyPagesFetched = m_UserInfo.FetchListBox(pageBindingSource, listBoxLikedPages, m_UserInfo.LoggedInUser.LikedPages);
+
+            VisibilityManager.ChangeTabVisibility(r_LikedPagesControls, labelNoLikedPages, isAnyPagesFetched);
+        }
+        private void fetchEvents()
+        {
+            fetchAllEvents();
+        }
+
+        private void fetchUserInfo()
+        {
+            fetchUserData();
+        }
+
+        private void fetchHoroscope()
+        {
+            FacebookObjectCollection<User> usersToSend = getCollectionOfUserAndFriends(); // Add logged in user to top of list
+
+            bool isAnyFriendsFetched = m_UserInfo.FetchListBox(listBoxFriendsHoroscope, usersToSend);
+            listBoxFriendsHoroscope.SelectedIndex = 0;
+            listBoxHoroscopeDay.SelectedIndex = 0;
         }
 
         private void changeControlsVisibilityAccordingToState(bool i_IsLoginState)
@@ -119,7 +187,7 @@ namespace BasicFacebookFeatures
         private void fetchInfo() // Not in use - we keep it in case we will want to trigger full fetch in the future
         {
             pictureBoxProfilePic.LoadAsync(m_UserInfo.LoggedInUser.PictureNormalURL);
-            m_UserInfo.FetchNewsFeed(listBoxNewsFeed);
+            m_UserInfo.FetchNewsFeed(listBoxNewsFeedOld);
             m_UserInfo.FetchPosts(listBoxPosts);
             fetchUserData();
             bool isAnyAlbumsFetched = m_UserInfo.FetchListBox(listBoxAlbums, m_UserInfo.LoggedInUser.Albums);
@@ -297,7 +365,7 @@ namespace BasicFacebookFeatures
         {
             try
             {
-                Post selected = m_UserInfo.LoggedInUser.NewsFeed[listBoxNewsFeed.SelectedIndex];
+                Post selected = m_UserInfo.LoggedInUser.NewsFeed[listBoxNewsFeedOld.SelectedIndex];
 
                 listBoxNewsFeedComments.DataSource = selected.Comments;
             }
@@ -347,38 +415,40 @@ namespace BasicFacebookFeatures
             switch (tabControlMain.SelectedIndex)
             {
                 case k_NewsFeedIndex:
-                    m_UserInfo.FetchNewsFeed(listBoxNewsFeed);
+                    //m_UserInfo.FetchNewsFeed(listBoxNewsFeed);
                     break;
                 case k_PostIndex:
-                    m_UserInfo.FetchPosts(listBoxPosts);
+                    //m_UserInfo.FetchPosts(listBoxPosts);
                     break;
                 case k_AlbumIndex:
-                    bool isAnyAlbumsFetched = m_UserInfo.FetchListBox(albumBindingSource, listBoxAlbums, m_UserInfo.LoggedInUser.Albums);
+                    //bool isAnyAlbumsFetched = m_UserInfo.FetchListBox(albumBindingSource, listBoxAlbums, m_UserInfo.LoggedInUser.Albums);
 
-                    VisibilityManager.ChangeTabVisibility(r_AlbumsControls, labelNoItemsAlbums, isAnyAlbumsFetched);
+                    //VisibilityManager.ChangeTabVisibility(r_AlbumsControls, labelNoItemsAlbums, isAnyAlbumsFetched);
                     break;
                 case k_EventsIndex:
-                    fetchAllEvents();
+                    //fetchAllEvents();
                     break;
                 case k_FriendsIndex:
-                    bool isAnyFriendsFetched = m_UserInfo.FetchListBox(userBindingSource, listBoxFriends, m_UserInfo.LoggedInUser.Friends);
 
-                    VisibilityManager.ChangeTabVisibility(r_FriendsControls, labelNoFriends, isAnyFriendsFetched);
+                    // TODO: delete after adding threads
+                    //bool isAnyFriendsFetched = m_UserInfo.FetchListBox(userBindingSource, listBoxFriends, m_UserInfo.LoggedInUser.Friends);
+
+                    //VisibilityManager.ChangeTabVisibility(r_FriendsControls, labelNoFriends, isAnyFriendsFetched);
                     break;
                 case k_HoroscopeIndex:
-                    FacebookObjectCollection<User> usersToSend = getCollectionOfUserAndFriends(); // Add logged in user to top of list
+                    //FacebookObjectCollection<User> usersToSend = getCollectionOfUserAndFriends(); // Add logged in user to top of list
 
-                    isAnyFriendsFetched = m_UserInfo.FetchListBox(listBoxFriendsHoroscope, usersToSend);
-                    listBoxFriendsHoroscope.SelectedIndex = 0;
-                    listBoxHoroscopeDay.SelectedIndex = 0;
+                    //bool isAnyFriendsFetched = m_UserInfo.FetchListBox(listBoxFriendsHoroscope, usersToSend);
+                    //listBoxFriendsHoroscope.SelectedIndex = 0;
+                    //listBoxHoroscopeDay.SelectedIndex = 0;
                     break;
                 case k_UserInfoIndex:
-                    fetchUserData();
+                    //fetchUserData();
                     break;
                 case k_LikedPagesIndex:
-                    bool isAnyPagesFetched = m_UserInfo.FetchListBox(pageBindingSource, listBoxLikedPages, m_UserInfo.LoggedInUser.LikedPages);
+                    //bool isAnyPagesFetched = m_UserInfo.FetchListBox(pageBindingSource, listBoxLikedPages, m_UserInfo.LoggedInUser.LikedPages);
 
-                    VisibilityManager.ChangeTabVisibility(r_LikedPagesControls, labelNoLikedPages, isAnyPagesFetched);
+                    //VisibilityManager.ChangeTabVisibility(r_LikedPagesControls, labelNoLikedPages, isAnyPagesFetched);
                     break;
                 default:
                     break;
