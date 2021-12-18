@@ -94,6 +94,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppSettings.cs" />
+    <Compile Include="CheckersFacade.cs" />
     <Compile Include="Checkers\BoardButton.cs">
       <SubType>Component</SubType>
     </Compile>
