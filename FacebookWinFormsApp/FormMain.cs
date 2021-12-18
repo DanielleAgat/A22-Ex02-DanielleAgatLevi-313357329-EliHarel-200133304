@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Threading;
 using FacebookWrapper.ObjectModel;
 using FacebookWrapper;
 using CheckersUIWindows;
@@ -10,449 +11,521 @@ using Logic;
 
 namespace BasicFacebookFeatures
 {
-     public partial class FormMain : Form
-     {
-          private readonly string r_UnavailableDataStr = "Whoops, Facebook isn't sending this data anymore :(";
-          private const string k_FailedToPost = "Failed to post! Please try again later";
-          private const string k_PostedSuccessfully = "Status postd! ID: ";
-          private const string k_FailedToLogout = "Failed to logout! Please try again later";
-          private const string k_FailedToLogin = "Failed to login! Please try again later";
-          private const string k_CaptionError = "Error!";
-          private const string k_FailedToGetInfo = "N/A";
-          private const string k_DayForHoroscope = "today";
-          private const int k_NewsFeedIndex = 0;
-          private const int k_PostIndex = 1;
-          private const int k_FriendsIndex = 2;
-          private const int k_AlbumIndex = 3;
-          private const int k_LikedPagesIndex = 4;
-          private const int k_EventsIndex = 5;
-          private const int k_UserInfoIndex = 6;
-          private const int k_GamesIndex = 7;
-          private const int k_HoroscopeIndex = 8;
-          private AppSettings m_AppSettings = null;
-          private LoginResult m_LoginResult = null;
-          private UserInfo m_UserInfo = null;
-          private string m_CurrentUserToken = "";
-          private readonly bool r_LoginState = true;
-          private string[] m_Permissions;
-          private readonly Control[] r_PermissionsControls;
-          private readonly Control[] r_LoggedInControls;
-          private readonly Control[] r_AlbumsControls;
-          private readonly Control[] r_LikedPagesControls;
-          private readonly Control[] r_FriendsControls;
-          private readonly Control[] r_HoroscopeControls;
+    public partial class FormMain : Form
+    {
+        private readonly string r_UnavailableDataStr = "Whoops, Facebook isn't sending this data anymore :(";
+        private const string k_FailedToPost = "Failed to post! Please try again later";
+        private const string k_PostedSuccessfully = "Status postd! ID: ";
+        private const string k_FailedToLogout = "Failed to logout! Please try again later";
+        private const string k_FailedToLogin = "Failed to login! Please try again later";
+        private const string k_CaptionError = "Error!";
+        private const string k_FailedToGetInfo = "N/A";
+        private const string k_DayForHoroscope = "today";
+        private const int k_NewsFeedIndex = 0;
+        private const int k_PostIndex = 1;
+        private const int k_FriendsIndex = 2;
+        private const int k_AlbumIndex = 3;
+        private const int k_LikedPagesIndex = 4;
+        private const int k_EventsIndex = 5;
+        private const int k_UserInfoIndex = 6;
+        private const int k_GamesIndex = 7;
+        private const int k_HoroscopeIndex = 8;
+        private AppSettings m_AppSettings = null;
+        private LoginResult m_LoginResult = null;
+        private UserInfo m_UserInfo = null;
+        private string m_CurrentUserToken = "";
+        private readonly bool r_LoginState = true;
+        private string[] m_Permissions;
+        private readonly Control[] r_PermissionsControls;
+        private readonly Control[] r_LoggedInControls;
+        private readonly Control[] r_AlbumsControls;
+        private readonly Control[] r_LikedPagesControls;
+        private readonly Control[] r_FriendsControls;
+        private readonly Control[] r_HoroscopeControls;
 
-          public FormMain()
-          {
-               InitializeComponent();
-               r_PermissionsControls = new Control[] { checkBoxSelectAllPermissions, checkedListBoxPermissions, labelPermissions };
-               r_LoggedInControls = new Control[] { pictureBoxProfilePic, tabControlMain, buttonLogout, checkBoxRememberUser };
-               r_AlbumsControls = new Control[] { listBoxAlbums, pictureBoxAlbumCoverPhoto };
-               r_LikedPagesControls = new Control[] { listBoxLikedPages, pictureBoxLikedPage };
-               r_FriendsControls = new Control[] { listBoxFriends, pictureBoxFriends };
-               r_HoroscopeControls = new Control[] { listBoxHoroscopeDay, buttonGetHoroscope, listBoxFriendsHoroscope };
+        public FormMain()
+        {
+            InitializeComponent();
+            r_PermissionsControls = new Control[] { checkBoxSelectAllPermissions, checkedListBoxPermissions, labelPermissions };
+            r_LoggedInControls = new Control[] { pictureBoxProfilePic, tabControlMain, buttonLogout, checkBoxRememberUser };
+            r_AlbumsControls = new Control[] { listBoxAlbums, panelAlbumDetails };
+            r_LikedPagesControls = new Control[] { listBoxLikedPages, panelLikedPagesDetails };
+            r_FriendsControls = new Control[] { listBoxFriends, panelUsersDetails };
+            r_HoroscopeControls = new Control[] { listBoxHoroscopeDay, buttonGetHoroscope, listBoxFriendsHoroscope };
 
-               FacebookService.s_CollectionLimit = 100;
-               changeControlsVisibilityAccordingToState(!r_LoginState);
-               loadAppSettings();
-          }
+            FacebookService.s_CollectionLimit = 100;
+            changeControlsVisibilityAccordingToState(!r_LoginState);
+        }
 
-          private void loadAppSettings()
-          {
-               m_AppSettings = AppSettings.LoadFromFile();
-               StartPosition = FormStartPosition.Manual;
-               Size = m_AppSettings.LastWindowSize;
-               Location = m_AppSettings.LastWindowLocation;
-               checkBoxRememberUser.Checked = m_AppSettings.IsRememberUser;
-               if (m_AppSettings.IsRememberUser && !string.IsNullOrEmpty(m_AppSettings.LastAccessToken))
-               {
-                    m_LoginResult = FacebookService.Connect(m_AppSettings.LastAccessToken);
-                    login();
-               }
-          }
+        protected override void OnShown(EventArgs i_EventArgs)
+        {
+            // Perform the connect only after the form is shown.
+            loadAppSettings();
 
-          private void buttonLogin_Click(object i_Sender, EventArgs i_EventArgs)
-          {
-               m_Permissions = UserInfo.SetUsersChosenPermissions(checkedListBoxPermissions);
-               int numOfPermissions = checkedListBoxPermissions.CheckedItems.Count;
+            base.OnShown(i_EventArgs);
+        }
 
-               m_LoginResult = BasicFacebookLogic.Login(numOfPermissions, m_Permissions);
-               login();
-          }
+        private void loadAppSettings()
+        {
+            m_AppSettings = AppSettings.LoadFromFile();
+            StartPosition = FormStartPosition.Manual;
+            Size = m_AppSettings.LastWindowSize;
+            Location = m_AppSettings.LastWindowLocation;
+            checkBoxRememberUser.Checked = m_AppSettings.IsRememberUser;
+            if (m_AppSettings.IsRememberUser && !string.IsNullOrEmpty(m_AppSettings.LastAccessToken))
+            {
+                m_LoginResult = FacebookService.Connect(m_AppSettings.LastAccessToken);
+                login();
+            }
+        }
 
-          private void login()
-          {
-               if (!string.IsNullOrEmpty(m_LoginResult.AccessToken))
-               {
-                    m_CurrentUserToken = m_LoginResult.AccessToken;
-                    loginFetchUserData(m_LoginResult);
-               }
-               else
-               {
-                    MessageBox.Show(k_FailedToLogin, k_CaptionError, MessageBoxButtons.OK, MessageBoxIcon.Error);
-               }
-          }
+        private void buttonLogin_Click(object i_Sender, EventArgs i_EventArgs)
+        {
+            m_Permissions = UserInfo.SetUsersChosenPermissions(checkedListBoxPermissions);
+            int numOfPermissions = checkedListBoxPermissions.CheckedItems.Count;
 
-          private void loginFetchUserData(LoginResult i_LoginResult)
-          {
-               User tempUser = i_LoginResult.LoggedInUser;
-               m_UserInfo = new UserInfo(tempUser);
+            m_LoginResult = BasicFacebookLogic.Login(numOfPermissions, m_Permissions);
+            login();
+        }
 
-               changeLoginButtonAccordingToState(!r_LoginState);
-               changeControlsVisibilityAccordingToState(r_LoginState);
-               pictureBoxProfilePic.LoadAsync(m_UserInfo.LoggedInUser.PictureNormalURL);
-               m_UserInfo.FetchNewsFeed(listBoxNewsFeed);
-          }
+        private void login()
+        {
+            if (!string.IsNullOrEmpty(m_LoginResult.AccessToken))
+            {
+                m_CurrentUserToken = m_LoginResult.AccessToken;
+                loginFetchUserData(m_LoginResult);
+            }
+            else
+            {
+                MessageBox.Show(k_FailedToLogin, k_CaptionError, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
-          private void changeControlsVisibilityAccordingToState(bool i_IsLoginState)
-          {
-               VisibilityManager.ChangeControlsVisibility(!i_IsLoginState, r_PermissionsControls);
-               VisibilityManager.ChangeControlsVisibility(i_IsLoginState, r_LoggedInControls);
-          }
+        private void loginFetchUserData(LoginResult i_LoginResult)
+        {
+            User tempUser = i_LoginResult.LoggedInUser;
+            m_UserInfo = new UserInfo(tempUser);
 
-          private void changeLoginButtonAccordingToState(bool i_IsLoginState)
-          {
-               buttonLogin.Text = (i_IsLoginState) ? "Login" : $"{m_UserInfo.LoggedInUser.Name}";
-               buttonLogin.Enabled = i_IsLoginState;
-          }
+            changeLoginButtonAccordingToState(!r_LoginState);
+            changeControlsVisibilityAccordingToState(r_LoginState);
+            pictureBoxProfilePic.LoadAsync(m_UserInfo.LoggedInUser.PictureNormalURL);
+            // m_UserInfo.FetchNewsFeed(listBoxNewsFeedOld);
 
-          private void fetchInfo() // Not in use - we keep it in case we will want to trigger full fetch in the future
-          {
-               pictureBoxProfilePic.LoadAsync(m_UserInfo.LoggedInUser.PictureNormalURL);
-               m_UserInfo.FetchNewsFeed(listBoxNewsFeed);
-               m_UserInfo.FetchPosts(listBoxPosts);
-               fetchUserData();
-               bool isAnyAlbumsFetched = m_UserInfo.FetchListBox(listBoxAlbums, m_UserInfo.LoggedInUser.Albums);
-               bool isAnyPagesFetched = m_UserInfo.FetchListBox(listBoxLikedPages, m_UserInfo.LoggedInUser.LikedPages);
-               bool isAnyFriendsFetched = m_UserInfo.FetchListBox(listBoxFriends, m_UserInfo.LoggedInUser.Friends);
 
-               changeTabsVisibilityAfterFetch(isAnyAlbumsFetched, isAnyPagesFetched, isAnyFriendsFetched);
-          }
+            // TODO: temp code to experiment with threads
+            new Thread(fetchNewsFeed).Start();
+            new Thread(fetchPosts).Start();
+            new Thread(fetchFriends).Start();
+            new Thread(fetchAlbums).Start();
+            new Thread(fetchLikedPages).Start();
+            new Thread(fetchEvents).Start();
+            new Thread(fetchUserInfo).Start();
+            new Thread(fetchHoroscope).Start();
+        }
 
-          private void changeTabsVisibilityAfterFetch(bool i_Albums, bool i_LikedPages, bool i_Friends)
-          {
-               VisibilityManager.ChangeTabVisibility(r_AlbumsControls, labelNoItemsAlbums, i_Albums);
-               VisibilityManager.ChangeTabVisibility(r_LikedPagesControls, labelNoLikedPages, i_LikedPages);
-               VisibilityManager.ChangeTabVisibility(r_FriendsControls, labelNoFriends, i_Friends);
-          }
+        private void fetchNewsFeed()
+        {
+            m_UserInfo.FetchNewsFeed(listBoxNewsFeedOld);
+        }
 
-          private void fetchUserData()
-          {
-               m_UserInfo.FetchUserEducation(ref labelEducationText);
-               m_UserInfo.FetchHometown(ref labelHometownText);
-               m_UserInfo.FetchBirthday(ref labelBirthdayText);
-               m_UserInfo.FetchGender(ref labelGenderText);
-               m_UserInfo.FetchEmail(ref labelEmailText);
-               m_UserInfo.FetchInterestedIn(ref labelInterestedInText);
-          }
+        private void fetchPosts()
+        {
+            m_UserInfo.FetchPosts(listBoxPosts);
+        }
 
-          private void buttonLogout_Click(object i_Sender, EventArgs i_EventArgs)
-          {
-               logoutProcess();
-          }
+        private void fetchFriends()
+        {
+            bool isAnyFriendsFetched = m_UserInfo.FetchListBox(userBindingSource, listBoxFriends, m_UserInfo.LoggedInUser.Friends);
 
-          private void logoutProcess()
-          {
-               FacebookService.Logout(null, m_CurrentUserToken, buttonLogout_LogoutFailed);
-               resetControllersToLoginState();
-          }
+            VisibilityManager.ChangeTabVisibility(r_FriendsControls, labelNoFriends, isAnyFriendsFetched);
+        }
 
-          private void resetControllersToLoginState()
-          {
-               m_UserInfo.LoggedInUser = null;
-               changeLoginButtonAccordingToState(r_LoginState);
-               pictureBoxProfilePic.Image = null;
-               changeControlsVisibilityAccordingToState(!r_LoginState);
-               listBoxPosts.Items.Clear();
-               listBoxAlbums.Items.Clear();
-          }
+        private void fetchAlbums()
+        {
+            bool isAnyAlbumsFetched = m_UserInfo.FetchListBox(albumBindingSource, listBoxAlbums, m_UserInfo.LoggedInUser.Albums);
 
-          private void buttonLogout_LogoutFailed()
-          {
-               MessageBox.Show(k_FailedToLogout, k_CaptionError, MessageBoxButtons.OK, MessageBoxIcon.Error);
-          }
+            VisibilityManager.ChangeTabVisibility(r_AlbumsControls, labelNoItemsAlbums, isAnyAlbumsFetched);
+        }
 
-          private void listBoxPosts_SelectedIndexChanged(object i_Sender, EventArgs i_EventArgs)
-          {
-               try
-               {
-                    Post selected = m_UserInfo.LoggedInUser.Posts[listBoxPosts.SelectedIndex];
+        private void fetchLikedPages()
+        {
+            bool isAnyPagesFetched = m_UserInfo.FetchListBox(pageBindingSource, listBoxLikedPages, m_UserInfo.LoggedInUser.LikedPages);
 
-                    listBoxPostComments.DataSource = selected.Comments;
-               }
-               catch (Exception exception)
-               {
-                    MessageBox.Show(r_UnavailableDataStr);
-               }
-          }
+            VisibilityManager.ChangeTabVisibility(r_LikedPagesControls, labelNoLikedPages, isAnyPagesFetched);
+        }
+        private void fetchEvents()
+        {
+            fetchAllEvents();
+        }
 
-          private void listBoxAlbums_SelectedIndexChanged(object i_Sender, EventArgs i_EventArgs)
-          {
-               if (listBoxAlbums.SelectedItems.Count == 1)
-               {
-                    Album selectedAlbum = listBoxAlbums.SelectedItem as Album;
+        private void fetchUserInfo()
+        {
+            fetchUserData();
+        }
 
-                    m_UserInfo.FetchAlbumCover(selectedAlbum, pictureBoxAlbumCoverPhoto, pictureBoxProfilePic);
-               }
-          }
+        private void fetchHoroscope()
+        {
+            FacebookObjectCollection<User> usersToSend = getCollectionOfUserAndFriends(); // Add logged in user to top of list
 
-          private void listBoxFriends_SelectedIndexChanged(object i_Sender, EventArgs i_EventArgs)
-          {
-               if (listBoxFriends.SelectedItems.Count == 1)
-               {
-                    User selectedFriend = listBoxFriends.SelectedItem as User;
+            bool isAnyFriendsFetched = m_UserInfo.FetchListBox(listBoxFriendsHoroscope, usersToSend);
+            listBoxFriendsHoroscope.SelectedIndex = 0;
+            listBoxHoroscopeDay.SelectedIndex = 0;
+        }
 
-                    m_UserInfo.FetchFriendProfilePic(selectedFriend, pictureBoxFriends);
-               }
-          }
+        private void changeControlsVisibilityAccordingToState(bool i_IsLoginState)
+        {
+            VisibilityManager.ChangeControlsVisibility(!i_IsLoginState, r_PermissionsControls);
+            VisibilityManager.ChangeControlsVisibility(i_IsLoginState, r_LoggedInControls);
+        }
 
-          private void buttonPublish_Click(object i_Sender, EventArgs i_)
-          {
-               try
-               {
-                    Status postedStatus = m_UserInfo.LoggedInUser.PostStatus(textBoxWritePost.Text);
+        private void changeLoginButtonAccordingToState(bool i_IsLoginState)
+        {
+            buttonLogin.Text = (i_IsLoginState) ? "Login" : $"{m_UserInfo.LoggedInUser.Name}";
+            buttonLogin.Enabled = i_IsLoginState;
+        }
 
-                    MessageBox.Show(k_PostedSuccessfully + postedStatus.Id);
-                    textBoxWritePost.Clear();
-                    m_UserInfo.FetchPosts(listBoxPosts);
-               }
-               catch (Exception ex)
-               {
-                    MessageBox.Show(k_FailedToPost);
-               }
-          }
+        private void fetchInfo() // Not in use - we keep it in case we will want to trigger full fetch in the future
+        {
+            pictureBoxProfilePic.LoadAsync(m_UserInfo.LoggedInUser.PictureNormalURL);
+            m_UserInfo.FetchNewsFeed(listBoxNewsFeedOld);
+            m_UserInfo.FetchPosts(listBoxPosts);
+            fetchUserData();
+            bool isAnyAlbumsFetched = m_UserInfo.FetchListBox(listBoxAlbums, m_UserInfo.LoggedInUser.Albums);
+            bool isAnyPagesFetched = m_UserInfo.FetchListBox(listBoxLikedPages, m_UserInfo.LoggedInUser.LikedPages);
+            bool isAnyFriendsFetched = m_UserInfo.FetchListBox(listBoxFriends, m_UserInfo.LoggedInUser.Friends);
 
-          private void listBoxLikedPages_SelectedIndexChanged(object i_Sender, EventArgs i_)
-          {
-               try
-               {
-                    if (listBoxLikedPages.SelectedItems.Count == 1)
+            changeTabsVisibilityAfterFetch(isAnyAlbumsFetched, isAnyPagesFetched, isAnyFriendsFetched);
+        }
+
+        private void changeTabsVisibilityAfterFetch(bool i_Albums, bool i_LikedPages, bool i_Friends)
+        {
+            VisibilityManager.ChangeTabVisibility(r_AlbumsControls, labelNoItemsAlbums, i_Albums);
+            VisibilityManager.ChangeTabVisibility(r_LikedPagesControls, labelNoLikedPages, i_LikedPages);
+            VisibilityManager.ChangeTabVisibility(r_FriendsControls, labelNoFriends, i_Friends);
+        }
+
+        private void fetchUserData()
+        {
+            m_UserInfo.FetchUserEducation(ref labelEducationText);
+            m_UserInfo.FetchHometown(ref labelHometownText);
+            m_UserInfo.FetchBirthday(ref labelBirthdayText);
+            m_UserInfo.FetchGender(ref labelGenderText);
+            m_UserInfo.FetchEmail(ref labelEmailText);
+            m_UserInfo.FetchInterestedIn(ref labelInterestedInText);
+        }
+
+        private void buttonLogout_Click(object i_Sender, EventArgs i_EventArgs)
+        {
+            logoutProcess();
+        }
+
+        private void logoutProcess()
+        {
+            FacebookService.Logout(null, m_CurrentUserToken, buttonLogout_LogoutFailed);
+            resetControllersToLoginState();
+        }
+
+        private void resetControllersToLoginState()
+        {
+            m_UserInfo.LoggedInUser = null;
+            changeLoginButtonAccordingToState(r_LoginState);
+            pictureBoxProfilePic.Image = null;
+            changeControlsVisibilityAccordingToState(!r_LoginState);
+            listBoxPosts.Items.Clear();
+            //listBoxAlbums.Items.Clear(); // Old code before data binding, delete if all else works
+        }
+
+        private void buttonLogout_LogoutFailed()
+        {
+            MessageBox.Show(k_FailedToLogout, k_CaptionError, MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        private void listBoxPosts_SelectedIndexChanged(object i_Sender, EventArgs i_EventArgs)
+        {
+            try
+            {
+                Post selected = m_UserInfo.LoggedInUser.Posts[listBoxPosts.SelectedIndex];
+
+                listBoxPostComments.DataSource = selected.Comments;
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(r_UnavailableDataStr);
+            }
+        }
+
+        //private void listBoxAlbums_SelectedIndexChanged(object i_Sender, EventArgs i_EventArgs)
+        //{
+        //    if (listBoxAlbums.SelectedItems.Count == 1)
+        //    {
+        //        Album selectedAlbum = listBoxAlbums.SelectedItem as Album;
+
+        //        m_UserInfo.FetchAlbumCover(selectedAlbum, pictureBoxAlbumCoverPhoto, pictureBoxProfilePic);
+        //    }
+        //}
+
+        //private void listBoxFriends_SelectedIndexChanged(object i_Sender, EventArgs i_EventArgs)
+        //{
+        //    if (listBoxFriends.SelectedItems.Count == 1)
+        //    {
+        //        User selectedFriend = listBoxFriends.SelectedItem as User;
+
+        //        m_UserInfo.FetchFriendProfilePic(selectedFriend, pictureBoxFriends);
+        //    }
+        //}
+
+        private void buttonPublish_Click(object i_Sender, EventArgs i_)
+        {
+            try
+            {
+                Status postedStatus = m_UserInfo.LoggedInUser.PostStatus(textBoxWritePost.Text);
+
+                MessageBox.Show(k_PostedSuccessfully + postedStatus.Id);
+                textBoxWritePost.Clear();
+                m_UserInfo.FetchPosts(listBoxPosts);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(k_FailedToPost);
+            }
+        }
+
+        // TODO: delete if done updating the two-way data binding panel which has the image already
+        //private void listBoxLikedPages_SelectedIndexChanged(object i_Sender, EventArgs i_)
+        //{
+        //     try
+        //     {
+        //          if (listBoxLikedPages.SelectedItems.Count == 1)
+        //          {
+        //               Page selectedPage = listBoxLikedPages.SelectedItem as Page;
+
+        //               pictureBoxLikedPage.LoadAsync(selectedPage.PictureLargeURL);
+        //          }
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //     }
+        //}
+
+        // TODO: delete if done
+        //private void listBoxEvents_SelectedIndexChanged(object i_Sender, EventArgs i_)
+        //{
+        //     try
+        //     {
+        //          if (listBoxEvents.SelectedItems.Count == 1)
+        //          {
+        //               Event selectedEvent = listBoxEvents.SelectedItem as Event;
+
+        //               pictureBoxEvent.LoadAsync(selectedEvent.Cover.SourceURL);
+        //          }
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //     }
+        //}
+
+        private void buttonCheckersLaunch_Click(object i_Sender, EventArgs i_EventArgs)
+        {
+            FormGameSettings gameSettings = new FormGameSettings(m_UserInfo);
+
+            gameSettings.ShowDialog();
+            if (gameSettings.DialogResult == DialogResult.OK)
+            {
+                FormBoard board = new FormBoard(gameSettings, m_UserInfo.LoggedInUser);
+
+                board.ShowDialog();
+                FormPostResult postResultForm = new FormPostResult(board);
+
+                postResultForm.ShowDialog();
+                if (postResultForm.DialogResult == DialogResult.Yes)
+                {
+                    try
                     {
-                         Page selectedPage = listBoxLikedPages.SelectedItem as Page;
+                        Status postedStatus = m_UserInfo.LoggedInUser.PostStatus(postResultForm.getMessageToPost());
 
-                         pictureBoxLikedPage.LoadAsync(selectedPage.PictureLargeURL);
+                        MessageBox.Show(k_PostedSuccessfully + postedStatus.Id);
                     }
-               }
-               catch (Exception ex)
-               {
-               }
-          }
-
-          private void listBoxEvents_SelectedIndexChanged(object i_Sender, EventArgs i_)
-          {
-               try
-               {
-                    if (listBoxEvents.SelectedItems.Count == 1)
+                    catch (Exception ex)
                     {
-                         Event selectedEvent = listBoxEvents.SelectedItem as Event;
-
-                         pictureBoxEvent.LoadAsync(selectedEvent.Cover.SourceURL);
+                        MessageBox.Show(k_FailedToPost);
                     }
-               }
-               catch (Exception ex)
-               {
-               }
-          }
+                }
+            }
+        }
 
-          private void buttonCheckersLaunch_Click(object i_Sender, EventArgs i_EventArgs)
-          {
-               FormGameSettings gameSettings = new FormGameSettings(m_UserInfo);
+        private void checkBoxSelectAll_CheckedChanged(object i_Sender, EventArgs i_EventArgs)
+        {
+            for (int i = 0; i < checkedListBoxPermissions.Items.Count; i++)
+            {
+                checkedListBoxPermissions.SetItemChecked(i, checkBoxSelectAllPermissions.Checked);
+            }
+        }
 
-               gameSettings.ShowDialog();
-               if (gameSettings.DialogResult == DialogResult.OK)
-               {
-                    FormBoard board = new FormBoard(gameSettings, m_UserInfo.LoggedInUser);
+        private void listBoxNewsFeed_SelectedIndexChanged(object i_Sender, EventArgs i_EventArgs)
+        {
+            try
+            {
+                Post selected = m_UserInfo.LoggedInUser.NewsFeed[listBoxNewsFeedOld.SelectedIndex];
 
-                    board.ShowDialog();
-                    FormPostResult postResultForm = new FormPostResult(board);
+                listBoxNewsFeedComments.DataSource = selected.Comments;
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(k_FailedToGetInfo);
+            }
+        }
 
-                    postResultForm.ShowDialog();
-                    if (postResultForm.DialogResult == DialogResult.Yes)
-                    {
-                         try
-                         {
-                              Status postedStatus = m_UserInfo.LoggedInUser.PostStatus(postResultForm.getMessageToPost());
+        private void tabPageEventsCreated_Click(object i_Sender, EventArgs i_EventArgs)
+        {
+            m_UserInfo.FetchEvents(eventBindingSource, m_UserInfo.LoggedInUser.EventsCreated, listBoxEventsCreated);
+        }
 
-                              MessageBox.Show(k_PostedSuccessfully + postedStatus.Id);
-                         }
-                         catch (Exception ex)
-                         {
-                              MessageBox.Show(k_FailedToPost);
-                         }
-                    }
-               }
-          }
+        private void tabPageEventsDeclined_Click(object i_Sender, EventArgs i_EventArgs)
+        {
+            m_UserInfo.FetchEvents(eventBindingSource, m_UserInfo.LoggedInUser.EventsDeclined, listBoxEventsDeclinde);
+        }
 
-          private void checkBoxSelectAll_CheckedChanged(object i_Sender, EventArgs i_EventArgs)
-          {
-               for (int i = 0; i < checkedListBoxPermissions.Items.Count; i++)
-               {
-                    checkedListBoxPermissions.SetItemChecked(i, checkBoxSelectAllPermissions.Checked);
-               }
-          }
+        private void tabPageEventsMaybe_Click(object i_Sender, EventArgs i_EventArgs)
+        {
+            m_UserInfo.FetchEvents(eventBindingSource, m_UserInfo.LoggedInUser.EventsMaybe, listBoxEventsMaybe);
+        }
 
-          private void listBoxNewsFeed_SelectedIndexChanged(object i_Sender, EventArgs i_EventArgs)
-          {
-               try
-               {
-                    Post selected = m_UserInfo.LoggedInUser.NewsFeed[listBoxNewsFeed.SelectedIndex];
+        private void tabPageEventsNotYetReplied_Click(object i_Sender, EventArgs i_EventArgs)
+        {
+            m_UserInfo.FetchEvents(eventBindingSource, m_UserInfo.LoggedInUser.EventsNotYetReplied, listBoxEventsNotYetReplied);
+        }
 
-                    listBoxNewsFeedComments.DataSource = selected.Comments;
-               }
-               catch (Exception exception)
-               {
-                    MessageBox.Show(k_FailedToGetInfo);
-               }
-          }
+        private void tabPageEvents_Click(object i_Sender, EventArgs i_EventArgs)
+        {
+            m_UserInfo.FetchEvents(eventBindingSource, m_UserInfo.LoggedInUser.Events, listBoxEvents);
+        }
 
-          private void tabPageEventsCreated_Click(object i_Sender, EventArgs i_EventArgs)
-          {
-               m_UserInfo.FetchEvents(m_UserInfo.LoggedInUser.EventsCreated, listBoxEventsCreated);
-          }
+        private void fetchAllEvents()
+        {
+            m_UserInfo.FetchEvents(eventBindingSource, m_UserInfo.LoggedInUser.EventsCreated, listBoxEventsCreated);
+            m_UserInfo.FetchEvents(eventBindingSource, m_UserInfo.LoggedInUser.EventsDeclined, listBoxEventsDeclinde);
+            m_UserInfo.FetchEvents(eventBindingSource, m_UserInfo.LoggedInUser.EventsMaybe, listBoxEventsMaybe);
+            m_UserInfo.FetchEvents(eventBindingSource, m_UserInfo.LoggedInUser.EventsNotYetReplied, listBoxEventsNotYetReplied);
+            m_UserInfo.FetchEvents(eventBindingSource, m_UserInfo.LoggedInUser.Events, listBoxEvents);
 
-          private void tabPageEventsDeclined_Click(object i_Sender, EventArgs i_EventArgs)
-          {
-               m_UserInfo.FetchEvents(m_UserInfo.LoggedInUser.EventsDeclined, listBoxEventsDeclinde);
-          }
+        }
 
-          private void tabPageEventsMaybe_Click(object i_Sender, EventArgs i_EventArgs)
-          {
-               m_UserInfo.FetchEvents(m_UserInfo.LoggedInUser.EventsMaybe, listBoxEventsMaybe);
-          }
+        private void tabControlMain_SelectedIndexChanges(object i_Sender, EventArgs i_EventArgs)
+        {
+            switch (tabControlMain.SelectedIndex)
+            {
+                case k_NewsFeedIndex:
+                    //m_UserInfo.FetchNewsFeed(listBoxNewsFeed);
+                    break;
+                case k_PostIndex:
+                    //m_UserInfo.FetchPosts(listBoxPosts);
+                    break;
+                case k_AlbumIndex:
+                    //bool isAnyAlbumsFetched = m_UserInfo.FetchListBox(albumBindingSource, listBoxAlbums, m_UserInfo.LoggedInUser.Albums);
 
-          private void tabPageEventsNotYetReplied_Click(object i_Sender, EventArgs i_EventArgs)
-          {
-               m_UserInfo.FetchEvents(m_UserInfo.LoggedInUser.EventsNotYetReplied, listBoxEventsNotYetReplied);
-          }
+                    //VisibilityManager.ChangeTabVisibility(r_AlbumsControls, labelNoItemsAlbums, isAnyAlbumsFetched);
+                    break;
+                case k_EventsIndex:
+                    //fetchAllEvents();
+                    break;
+                case k_FriendsIndex:
 
-          private void tabPageEvents_Click(object i_Sender, EventArgs i_EventArgs)
-          {
-               m_UserInfo.FetchEvents(m_UserInfo.LoggedInUser.Events, listBoxEvents);
-          }
+                    // TODO: delete after adding threads
+                    //bool isAnyFriendsFetched = m_UserInfo.FetchListBox(userBindingSource, listBoxFriends, m_UserInfo.LoggedInUser.Friends);
 
-          private void fetchAllEvents()
-          {
-               m_UserInfo.FetchEvents(m_UserInfo.LoggedInUser.EventsCreated, listBoxEventsCreated);
-               m_UserInfo.FetchEvents(m_UserInfo.LoggedInUser.EventsDeclined, listBoxEventsDeclinde);
-               m_UserInfo.FetchEvents(m_UserInfo.LoggedInUser.EventsMaybe, listBoxEventsMaybe);
-               m_UserInfo.FetchEvents(m_UserInfo.LoggedInUser.EventsNotYetReplied, listBoxEventsNotYetReplied);
-               m_UserInfo.FetchEvents(m_UserInfo.LoggedInUser.Events, listBoxEvents);
-          }
+                    //VisibilityManager.ChangeTabVisibility(r_FriendsControls, labelNoFriends, isAnyFriendsFetched);
+                    break;
+                case k_HoroscopeIndex:
+                    //FacebookObjectCollection<User> usersToSend = getCollectionOfUserAndFriends(); // Add logged in user to top of list
 
-          private void tabControlMain_SelectedIndexChanges(object i_Sender, EventArgs i_EventArgs)
-          {
-               switch (tabControlMain.SelectedIndex)
-               {
-                    case k_NewsFeedIndex:
-                         m_UserInfo.FetchNewsFeed(listBoxNewsFeed);
-                         break;
-                    case k_PostIndex:
-                         m_UserInfo.FetchPosts(listBoxPosts);
-                         break;
-                    case k_AlbumIndex:
-                         bool isAnyAlbumsFetched = m_UserInfo.FetchListBox(listBoxAlbums, m_UserInfo.LoggedInUser.Albums);
+                    //bool isAnyFriendsFetched = m_UserInfo.FetchListBox(listBoxFriendsHoroscope, usersToSend);
+                    //listBoxFriendsHoroscope.SelectedIndex = 0;
+                    //listBoxHoroscopeDay.SelectedIndex = 0;
+                    break;
+                case k_UserInfoIndex:
+                    //fetchUserData();
+                    break;
+                case k_LikedPagesIndex:
+                    //bool isAnyPagesFetched = m_UserInfo.FetchListBox(pageBindingSource, listBoxLikedPages, m_UserInfo.LoggedInUser.LikedPages);
 
-                         VisibilityManager.ChangeTabVisibility(r_AlbumsControls, labelNoItemsAlbums, isAnyAlbumsFetched);
-                         break;
-                    case k_EventsIndex:
-                         fetchAllEvents();
-                         break;
-                    case k_FriendsIndex:
-                         bool isAnyFriendsFetched = m_UserInfo.FetchListBox(listBoxFriends, m_UserInfo.LoggedInUser.Friends);
+                    //VisibilityManager.ChangeTabVisibility(r_LikedPagesControls, labelNoLikedPages, isAnyPagesFetched);
+                    break;
+                default:
+                    break;
+            }
+        }
 
-                         VisibilityManager.ChangeTabVisibility(r_FriendsControls, labelNoFriends, isAnyFriendsFetched);
-                         break;
-                    case k_HoroscopeIndex:
-                         FacebookObjectCollection<User> usersToSend = getCollectionOfUserAndFriends(); // Add logged in user to top of list
+        private FacebookObjectCollection<User> getCollectionOfUserAndFriends()
+        {
+            FacebookObjectCollection<User> userCollection = new FacebookObjectCollection<User> { m_UserInfo.LoggedInUser };
 
-                         isAnyFriendsFetched = m_UserInfo.FetchListBox(listBoxFriendsHoroscope, usersToSend);
-                         listBoxFriendsHoroscope.SelectedIndex = 0;
-                         listBoxHoroscopeDay.SelectedIndex = 0;
-                         break;
-                    case k_UserInfoIndex:
-                         fetchUserData();
-                         break;
-                    case k_LikedPagesIndex:
-                         bool isAnyPagesFetched = m_UserInfo.FetchListBox(listBoxLikedPages, m_UserInfo.LoggedInUser.LikedPages);
+            foreach (User user in m_UserInfo.LoggedInUser.Friends)
+            {
+                userCollection.Add(user);
+            }
 
-                         VisibilityManager.ChangeTabVisibility(r_LikedPagesControls, labelNoLikedPages, isAnyPagesFetched);
-                         break;
-                    default:
-                         break;
-               }
-          }
+            return userCollection;
+        }
 
-          private FacebookObjectCollection<User> getCollectionOfUserAndFriends()
-          {
-               FacebookObjectCollection<User> userCollection = new FacebookObjectCollection<User> { m_UserInfo.LoggedInUser };
+        private void buttonGetHoroscope_Click(object i_Sender, EventArgs i_EventArgs)
+        {
+            string horoscopeMessageToPost;
+            string horoscopeTitle = "Horoscope!";
+            string day = listBoxHoroscopeDay.Text;
+            User chosenUser = listBoxFriendsHoroscope.SelectedItem as User;
 
-               foreach (User user in m_UserInfo.LoggedInUser.Friends)
-               {
-                    userCollection.Add(user);
-               }
+            m_UserInfo.FetchHoroscope(labelHoroscopeResult, day, chosenUser);
+            labelHoroscopeResult.Visible = true;
+            horoscopeMessageToPost = getHoroscopeMessageToPost(chosenUser);
+        }
 
-               return userCollection;
-          }
+        private void offerToPost(string i_MessageToPost, string i_Title)
+        {
+            DialogResult dialogResult = MessageBox.Show(i_MessageToPost, i_Title, MessageBoxButtons.YesNo);
 
-          private void buttonGetHoroscope_Click(object i_Sender, EventArgs i_EventArgs)
-          {
-               string horoscopeMessageToPost;
-               string horoscopeTitle = "Horoscope!";
-               string day = listBoxHoroscopeDay.Text;
-               User chosenUser = listBoxFriendsHoroscope.SelectedItem as User;
+            if (dialogResult == DialogResult.Yes)
+            {
+                m_UserInfo.LoggedInUser.PostStatus(i_MessageToPost);
+            }
+        }
 
-               m_UserInfo.FetchHoroscope(labelHoroscopeResult, day, chosenUser);
-               labelHoroscopeResult.Visible = true;
-               horoscopeMessageToPost = getHoroscopeMessageToPost(chosenUser);
-          }
+        private string getHoroscopeMessageToPost(User i_ChosenUser)
+        {
+            string horoscopeMessageToPost = null;
+            string userName;
 
-          private void offerToPost(string i_MessageToPost, string i_Title)
-          {
-               DialogResult dialogResult = MessageBox.Show(i_MessageToPost, i_Title, MessageBoxButtons.YesNo);
+            if (!string.IsNullOrEmpty(labelHoroscopeResult.Text) && i_ChosenUser != null)
+            {
+                if (i_ChosenUser.Equals(m_UserInfo.LoggedInUser))
+                {
+                    userName = "me";
+                }
+                else
+                {
+                    userName = i_ChosenUser.Name;
+                }
 
-               if (dialogResult == DialogResult.Yes)
-               {
-                    m_UserInfo.LoggedInUser.PostStatus(i_MessageToPost);
-               }
-          }
+                horoscopeMessageToPost = $"This is what the stars foresee for {userName}:{Environment.NewLine}{Environment.NewLine}{labelHoroscopeResult}";
+            }
 
-          private string getHoroscopeMessageToPost(User i_ChosenUser)
-          {
-               string horoscopeMessageToPost = null;
-               string userName;
+            return horoscopeMessageToPost;
+        }
 
-               if (!string.IsNullOrEmpty(labelHoroscopeResult.Text) && i_ChosenUser != null)
-               {
-                    if (i_ChosenUser.Equals(m_UserInfo.LoggedInUser))
-                    {
-                         userName = "me";
-                    }
-                    else
-                    {
-                         userName = i_ChosenUser.Name;
-                    }
-
-                    horoscopeMessageToPost = $"This is what the stars foresee for {userName}:{Environment.NewLine}{Environment.NewLine}{labelHoroscopeResult}";
-               }
-
-               return horoscopeMessageToPost;
-          }
-
-          protected override void OnFormClosing(FormClosingEventArgs i_EventArgs)
-          {
-               base.OnFormClosing(i_EventArgs);
-               if (checkBoxRememberUser.Checked)
-               {
-                    m_AppSettings.LastWindowSize = Size;
-                    m_AppSettings.LastWindowLocation = Location;
-                    m_AppSettings.IsRememberUser = checkBoxRememberUser.Checked;
-                    m_AppSettings.LastAccessToken = m_LoginResult.AccessToken;
-                    m_AppSettings.SaveToFile();
-               }
-               else
-               {
-                    m_AppSettings.SaveDefault();
-               }
-          }
-     }
+        protected override void OnFormClosing(FormClosingEventArgs i_EventArgs)
+        {
+            base.OnFormClosing(i_EventArgs);
+            if (checkBoxRememberUser.Checked)
+            {
+                m_AppSettings.LastWindowSize = Size;
+                m_AppSettings.LastWindowLocation = Location;
+                m_AppSettings.IsRememberUser = checkBoxRememberUser.Checked;
+                m_AppSettings.LastAccessToken = m_LoginResult.AccessToken;
+                m_AppSettings.SaveToFile();
+            }
+            else
+            {
+                m_AppSettings.SaveDefault();
+            }
+        }
+    }
 }
