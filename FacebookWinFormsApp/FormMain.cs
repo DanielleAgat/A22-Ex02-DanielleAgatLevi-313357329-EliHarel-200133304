@@ -103,8 +103,8 @@ namespace BasicFacebookFeatures
 
         private void loginFetchUserData(LoginResult i_LoginResult)
         {
-            User tempUser = i_LoginResult.LoggedInUser;
-            m_UserInfo = new UserInfo(tempUser);
+            m_UserInfo = UserInfo.Instance;
+            m_UserInfo.LoggedInUser = i_LoginResult.LoggedInUser;
 
             changeLoginButtonAccordingToState(!r_LoginState);
             changeControlsVisibilityAccordingToState(r_LoginState);
@@ -331,7 +331,7 @@ namespace BasicFacebookFeatures
             gameSettings.ShowDialog();
             if (gameSettings.DialogResult == DialogResult.OK)
             {
-                FormBoard board = new FormBoard(gameSettings, m_UserInfo.LoggedInUser);
+                FormBoard board = new FormBoard(gameSettings, UserInfo.Instance.LoggedInUser);
 
                 board.ShowDialog();
                 FormPostResult postResultForm = new FormPostResult(board);

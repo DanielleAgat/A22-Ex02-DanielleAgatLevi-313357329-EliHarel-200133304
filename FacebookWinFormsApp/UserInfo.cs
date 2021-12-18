@@ -5,7 +5,7 @@ using FacebookWrapper.ObjectModel;
 
 namespace BasicFacebookFeatures
 {
-    public class UserInfo
+    public sealed class UserInfo
     {
         private const string k_FailedToGetInfo = "N/A";
         private const string k_NoItemsToShow = "Whoops, there is nothing here, Maybe try to check your permissions";
@@ -13,13 +13,46 @@ namespace BasicFacebookFeatures
         private const string k_FemaleGender = "female";
         private const string k_MaleGender = "male";
         private User m_LoggedInUser;
+        private static UserInfo sr_UserInfo;
+        private static readonly object sr_Lock = new object();
 
-        public UserInfo(User i_LoggedInUser)
+        public User LoggedInUser
         {
-            m_LoggedInUser = i_LoggedInUser;
+             get
+             {
+                  return m_LoggedInUser;
+             }
+             set
+             {
+                  m_LoggedInUser = value;
+             }
         }
 
-        public static string[] SetUsersChosenPermissions(CheckedListBox i_CheckedListBoxPermissions)
+        private UserInfo()
+        {
+        }
+
+
+        public static UserInfo Instance
+        {
+             get
+             {
+                  if (sr_UserInfo == null)
+                  {
+                       lock (sr_Lock)
+                       {
+                            if (sr_UserInfo == null)
+                            {
+                                 sr_UserInfo = new UserInfo();
+                            }
+                       }
+                  }
+
+                  return sr_UserInfo;
+             }
+        }
+
+          public static string[] SetUsersChosenPermissions(CheckedListBox i_CheckedListBoxPermissions)
         {
             int checkedItemsCount = i_CheckedListBoxPermissions.CheckedItems.Count;
             string[] permissions = new string[checkedItemsCount + BasicFacebookLogic.sr_ConstantPermissions.Length];
@@ -30,18 +63,6 @@ namespace BasicFacebookFeatures
             }
 
             return permissions;
-        }
-
-        public User LoggedInUser
-        {
-            get
-            {
-                return m_LoggedInUser;
-            }
-            set
-            {
-                m_LoggedInUser = value;
-            }
         }
 
         public void FetchNewsFeed(ListBox io_ListBoxNewsFeed)
