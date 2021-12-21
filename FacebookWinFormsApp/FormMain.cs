@@ -103,8 +103,8 @@ namespace BasicFacebookFeatures
 
         private void loginFetchUserData(LoginResult i_LoginResult)
         {
-            User tempUser = i_LoginResult.LoggedInUser;
-            m_UserInfo = new UserInfo(tempUser);
+            m_UserInfo = UserInfo.Instance;
+            m_UserInfo.LoggedInUser = i_LoginResult.LoggedInUser;
 
             changeLoginButtonAccordingToState(!r_LoginState);
             changeControlsVisibilityAccordingToState(r_LoginState);
@@ -328,9 +328,12 @@ namespace BasicFacebookFeatures
         {
              ListBox friendsListBox = new ListBox();
 
-             m_UserInfo.FetchListBox(friendsListBox, m_UserInfo.LoggedInUser.Friends);
-             CheckersFacade checkersFacade = new CheckersFacade(m_UserInfo.LoggedInUser.Name,
-                  m_UserInfo.LoggedInUser.ImageNormal, friendsListBox);
+FacebookServicesCollection<friends>  userFriends = UserInfo.Instance.LoggedInUser.friends;
+String userName = UserInfo.Instance.LoggedInUser.Name;
+Image userImage = UserInfo.Instance.LoggedInUser.ImageNormal;
+
+UserInfo.Instance.FetchListBox(friendsListBox, friends); 
+CheckersFacade checkersFacade = new CheckersFacade(userName, image, friendsListBox);
 
              checkersFacade.m_PostStatus += postResult;
              checkersFacade.LaunchCheckers();
