@@ -326,31 +326,31 @@ namespace BasicFacebookFeatures
 
         private void buttonCheckersLaunch_Click(object i_Sender, EventArgs i_EventArgs)
         {
-            FormGameSettings gameSettings = new FormGameSettings(m_UserInfo);
+             ListBox friendsListBox = new ListBox();
 
-            gameSettings.ShowDialog();
-            if (gameSettings.DialogResult == DialogResult.OK)
-            {
-                FormBoard board = new FormBoard(gameSettings, UserInfo.Instance.LoggedInUser);
+FacebookServicesCollection<friends>  userFriends = UserInfo.Instance.LoggedInUser.friends;
+String userName = UserInfo.Instance.LoggedInUser.Name;
+Image userImage = UserInfo.Instance.LoggedInUser.ImageNormal;
 
-                board.ShowDialog();
-                FormPostResult postResultForm = new FormPostResult(board);
+UserInfo.Instance.FetchListBox(friendsListBox, friends); 
+CheckersFacade checkersFacade = new CheckersFacade(userName, image, friendsListBox);
 
-                postResultForm.ShowDialog();
-                if (postResultForm.DialogResult == DialogResult.Yes)
-                {
-                    try
-                    {
-                        Status postedStatus = m_UserInfo.LoggedInUser.PostStatus(postResultForm.getMessageToPost());
+             checkersFacade.m_PostStatus += postResult;
+             checkersFacade.LaunchCheckers();
+        }
 
-                        MessageBox.Show(k_PostedSuccessfully + postedStatus.Id);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(k_FailedToPost);
-                    }
-                }
-            }
+        private void postResult(String i_MessageToPost)
+        {
+             try
+             {
+                  Status postedStatus = m_UserInfo.LoggedInUser.PostStatus(i_MessageToPost);
+
+                  MessageBox.Show(k_PostedSuccessfully + postedStatus.Id);
+             }
+             catch(Exception ex)
+             {
+                  MessageBox.Show(k_FailedToPost);
+             }
         }
 
         private void checkBoxSelectAll_CheckedChanged(object i_Sender, EventArgs i_EventArgs)
