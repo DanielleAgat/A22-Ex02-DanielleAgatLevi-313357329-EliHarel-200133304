@@ -87,25 +87,28 @@ namespace BasicFacebookFeatures
             if (m_LoggedInUser != null)
             {
                 io_ListBoxPosts.Items.Clear();
-                addPostsToListBoxPosts(ref io_ListBoxPosts);
+                addPostsToListBoxPosts(io_ListBoxPosts);
             }
         }
 
-        private void addPostsToListBoxPosts(ref ListBox io_ListBoxPosts)
+        private void addPostsToListBoxPosts(ListBox io_ListBoxPosts)
         {
             foreach (Post post in m_LoggedInUser.Posts)
             {
                 if (post.Message != null)
                 {
-                    io_ListBoxPosts.Items.Add(post.Message);
+                     io_ListBoxPosts.Invoke(new Action(
+                          () => io_ListBoxPosts.Items.Add(post.Message)));
                 }
                 else if (post.Caption != null)
                 {
-                    io_ListBoxPosts.Items.Add(post.Caption);
+                     io_ListBoxPosts.Invoke(new Action(
+                          () => io_ListBoxPosts.Items.Add(post.Caption)));
                 }
                 else
                 {
-                    io_ListBoxPosts.Items.Add(string.Format("[{0}]", post.Type));
+                     io_ListBoxPosts.Invoke(new Action(
+                          () => io_ListBoxPosts.Items.Add(string.Format("[{0}]", post.Type))));
                 }
             }
         }

@@ -58,7 +58,7 @@ namespace CheckersUIWindows
 
         public event Action MatchEnded;
 
-        public FormBoard(FormGameSettings i_GameSettings, User i_LoggedInUser)
+        public FormBoard(FormGameSettings i_GameSettings, Image i_UserImage)
         {
             r_SideToHighlight = new LinkedList<GameEngine.eSide>();
             r_CapturedListTop = new LinkedList<PiecePictureBox>();
@@ -82,10 +82,10 @@ namespace CheckersUIWindows
             initializeComponentManual(i_GameSettings);
             highlightNextPlayer();
             enableForfeitButton();
-            generatePicturePoxes(i_GameSettings, i_LoggedInUser);
+            generatePictureBoxes(i_GameSettings, i_UserImage);
         }
 
-        private void generatePicturePoxes(FormGameSettings i_GameSettings, User i_LoggedInUser)
+        private void generatePictureBoxes(FormGameSettings i_GameSettings, Image i_UserImage)
         {
             m_PictureBoxPlayer1Profile = new PictureBox();
             m_PictureBoxPlayer2Profile = new PictureBox();
@@ -101,7 +101,7 @@ namespace CheckersUIWindows
             profile2Point.Y -= k_PictureBoxOffsetY;
             setXAxisProfilePic(m_PictureBoxPlayer1Profile, m_LabelPlayer1Name);
             setXAxisProfilePic(m_PictureBoxPlayer2Profile, m_LabelPlayer2Name);
-            m_PictureBoxPlayer1Profile.Image = i_LoggedInUser.ImageNormal;
+            m_PictureBoxPlayer1Profile.Image = i_UserImage;
             setPlayer2Image(i_GameSettings);
             m_PictureBoxPlayer1Profile.Location = profile1Point;
             m_PictureBoxPlayer2Profile.Location = profile2Point;

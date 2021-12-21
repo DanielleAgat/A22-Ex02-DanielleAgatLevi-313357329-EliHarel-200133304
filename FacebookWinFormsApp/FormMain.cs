@@ -326,31 +326,28 @@ namespace BasicFacebookFeatures
 
         private void buttonCheckersLaunch_Click(object i_Sender, EventArgs i_EventArgs)
         {
-            FormGameSettings gameSettings = new FormGameSettings(m_UserInfo);
+             ListBox friendsListBox = new ListBox();
 
-            gameSettings.ShowDialog();
-            if (gameSettings.DialogResult == DialogResult.OK)
-            {
-                FormBoard board = new FormBoard(gameSettings, m_UserInfo.LoggedInUser);
+             m_UserInfo.FetchListBox(friendsListBox, m_UserInfo.LoggedInUser.Friends);
+             CheckersFacade checkersFacade = new CheckersFacade(m_UserInfo.LoggedInUser.Name,
+                  m_UserInfo.LoggedInUser.ImageNormal, friendsListBox);
 
-                board.ShowDialog();
-                FormPostResult postResultForm = new FormPostResult(board);
+             checkersFacade.m_PostStatus += postResult;
+             checkersFacade.LaunchCheckers();
+        }
 
-                postResultForm.ShowDialog();
-                if (postResultForm.DialogResult == DialogResult.Yes)
-                {
-                    try
-                    {
-                        Status postedStatus = m_UserInfo.LoggedInUser.PostStatus(postResultForm.getMessageToPost());
+        private void postResult(String i_MessageToPost)
+        {
+             try
+             {
+                  Status postedStatus = m_UserInfo.LoggedInUser.PostStatus(i_MessageToPost);
 
-                        MessageBox.Show(k_PostedSuccessfully + postedStatus.Id);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(k_FailedToPost);
-                    }
-                }
-            }
+                  MessageBox.Show(k_PostedSuccessfully + postedStatus.Id);
+             }
+             catch(Exception ex)
+             {
+                  MessageBox.Show(k_FailedToPost);
+             }
         }
 
         private void checkBoxSelectAll_CheckedChanged(object i_Sender, EventArgs i_EventArgs)
