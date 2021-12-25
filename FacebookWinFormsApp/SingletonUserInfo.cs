@@ -13,7 +13,7 @@ namespace BasicFacebookFeatures
         private const string k_FemaleGender = "female";
         private const string k_MaleGender = "male";
         private User m_LoggedInUser;
-        private static SingletonUserInfo sr_UserInfo;
+        private static SingletonUserInfo s_Instance;
         private static readonly object sr_Lock = new object();
 
         public User LoggedInUser
@@ -37,18 +37,18 @@ namespace BasicFacebookFeatures
         {
              get
              {
-                  if (sr_UserInfo == null)
+                  if (s_Instance == null)
                   {
                        lock (sr_Lock)
                        {
-                            if (sr_UserInfo == null)
+                            if (s_Instance == null)
                             {
-                                 sr_UserInfo = new SingletonUserInfo();
+                                 s_Instance = new SingletonUserInfo();
                             }
                        }
                   }
 
-                  return sr_UserInfo;
+                  return s_Instance;
              }
         }
 
