@@ -326,31 +326,32 @@ namespace BasicFacebookFeatures
 
         private void buttonCheckersLaunch_Click(object i_Sender, EventArgs i_EventArgs)
         {
-             ListBox friendsListBox = new ListBox();
+            ListBox friendsListBox = new ListBox();
 
-FacebookServicesCollection<friends>  userFriends = UserInfo.Instance.LoggedInUser.friends;
-String userName = UserInfo.Instance.LoggedInUser.Name;
-Image userImage = UserInfo.Instance.LoggedInUser.ImageNormal;
+            FacebookObjectCollection<User> userFriends = UserInfo.Instance.LoggedInUser.Friends;
 
-UserInfo.Instance.FetchListBox(friendsListBox, friends); 
-CheckersFacade checkersFacade = new CheckersFacade(userName, image, friendsListBox);
+            String userName = UserInfo.Instance.LoggedInUser.Name;
+            Image userImage = UserInfo.Instance.LoggedInUser.ImageNormal;
 
-             checkersFacade.m_PostStatus += postResult;
-             checkersFacade.LaunchCheckers();
+            UserInfo.Instance.FetchListBox(friendsListBox, userFriends);
+            CheckersFacade checkersFacade = new CheckersFacade(userName, userImage, friendsListBox);
+
+            checkersFacade.m_PostStatus += postResult;
+            checkersFacade.LaunchCheckers();
         }
 
         private void postResult(String i_MessageToPost)
         {
-             try
-             {
-                  Status postedStatus = m_UserInfo.LoggedInUser.PostStatus(i_MessageToPost);
+            try
+            {
+                Status postedStatus = m_UserInfo.LoggedInUser.PostStatus(i_MessageToPost);
 
-                  MessageBox.Show(k_PostedSuccessfully + postedStatus.Id);
-             }
-             catch(Exception ex)
-             {
-                  MessageBox.Show(k_FailedToPost);
-             }
+                MessageBox.Show(k_PostedSuccessfully + postedStatus.Id);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(k_FailedToPost);
+            }
         }
 
         private void checkBoxSelectAll_CheckedChanged(object i_Sender, EventArgs i_EventArgs)

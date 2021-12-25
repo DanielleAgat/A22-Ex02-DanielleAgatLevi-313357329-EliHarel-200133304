@@ -40,6 +40,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BasicFacebookLogic.cs" />
+    <Compile Include="BoardGameBuilder\BoardGameComposer.cs" />
+    <Compile Include="BoardGameBuilder\CheckersBuilder.cs" />
+    <Compile Include="BoardGameBuilder\IBoardGameBuilder.cs" />
+    <Compile Include="BoardGameComposer.cs" />
     <Compile Include="Checkers\AI.cs" />
     <Compile Include="Checkers\Board.cs" />
     <Compile Include="Checkers\BoardPoint.cs" />
@@ -60,5 +64,6 @@
     <Reference Include="System" />
     <Reference Include="System.Net.Http" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
