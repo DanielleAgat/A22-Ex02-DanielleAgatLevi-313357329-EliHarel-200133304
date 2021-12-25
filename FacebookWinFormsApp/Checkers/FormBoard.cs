@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using CheckersLogic;
+using Logic.BoardGameBuilder;
 using Timer = System.Windows.Forms.Timer;
 using FacebookWrapper.ObjectModel;
 
@@ -72,7 +73,19 @@ namespace CheckersUIWindows
             string player1Name = i_GameSettings.Player1Name;
             string player2Name = i_GameSettings.Player2Name;
 
-            r_GameEngine = new GameEngine(player1Name, player2Name, r_GameMode, r_BoardSize);
+            // r_GameEngine = new GameEngine(player1Name, player2Name, r_GameMode, r_BoardSize); // TODO: Delete
+
+            CheckersBuilder checkersBuilder = new CheckersBuilder();
+
+            // TODO: consider changing if we think Guy won't like
+            checkersBuilder.SetPlayerOneName(player1Name) 
+                .SetPlayerTwoName(player2Name)
+                .SetGameMode(r_GameMode)
+                .SetBoardSize(r_BoardSize);
+
+            BoardGameComposer.Compose(checkersBuilder);
+            r_GameEngine = checkersBuilder.GetProduct();
+
             generateButtonMatrix();
             generatePieces();
             r_GameEngine.ResetGame();
@@ -195,7 +208,7 @@ namespace CheckersUIWindows
 
         private void generatePieces()
         {
-            ushort numOfPieces = r_GameEngine.GetNumOfPiecesByBoardSize(r_BoardSize);
+            ushort numOfPieces = GameEngine.GetNumOfPiecesByBoardSize(r_BoardSize);
             Piece[] topPieces = r_GameEngine.TopPlayer.Pieces;
             Piece[] botPieces = r_GameEngine.BottomPlayer.Pieces;
 
