@@ -328,10 +328,10 @@ namespace BasicFacebookFeatures
         {
             ListBox friendsListBox = new ListBox();
 
-            FacebookObjectCollection<User> userFriends = SingletonUserInfo.Instance.LoggedInUser.Friends;
+            FacebookObjectCollection<User> userFriends = m_UserInfo.LoggedInUser.Friends;
 
-            String userName = SingletonUserInfo.Instance.LoggedInUser.Name;
-            Image userImage = SingletonUserInfo.Instance.LoggedInUser.ImageNormal;
+            String userName = m_UserInfo.LoggedInUser.Name;
+            Image userImage = m_UserInfo.LoggedInUser.ImageNormal;
 
             SingletonUserInfo.Instance.FetchListBox(friendsListBox, userFriends);
             CheckersFacade checkersFacade = new CheckersFacade(userName, userImage, friendsListBox);
