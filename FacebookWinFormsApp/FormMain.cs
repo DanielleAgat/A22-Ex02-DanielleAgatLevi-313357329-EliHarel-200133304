@@ -32,7 +32,7 @@ namespace BasicFacebookFeatures
         private const int k_HoroscopeIndex = 8;
         private AppSettings m_AppSettings = null;
         private LoginResult m_LoginResult = null;
-        private UserInfo m_UserInfo = null;
+        private SingletonUserInfo m_UserInfo = null;
         private string m_CurrentUserToken = "";
         private readonly bool r_LoginState = true;
         private string[] m_Permissions;
@@ -81,7 +81,7 @@ namespace BasicFacebookFeatures
 
         private void buttonLogin_Click(object i_Sender, EventArgs i_EventArgs)
         {
-            m_Permissions = UserInfo.SetUsersChosenPermissions(checkedListBoxPermissions);
+            m_Permissions = SingletonUserInfo.SetUsersChosenPermissions(checkedListBoxPermissions);
             int numOfPermissions = checkedListBoxPermissions.CheckedItems.Count;
 
             m_LoginResult = BasicFacebookLogic.Login(numOfPermissions, m_Permissions);
@@ -103,7 +103,7 @@ namespace BasicFacebookFeatures
 
         private void loginFetchUserData(LoginResult i_LoginResult)
         {
-            m_UserInfo = UserInfo.Instance;
+            m_UserInfo = SingletonUserInfo.Instance;
             m_UserInfo.LoggedInUser = i_LoginResult.LoggedInUser;
 
             changeLoginButtonAccordingToState(!r_LoginState);
@@ -328,12 +328,12 @@ namespace BasicFacebookFeatures
         {
             ListBox friendsListBox = new ListBox();
 
-            FacebookObjectCollection<User> userFriends = UserInfo.Instance.LoggedInUser.Friends;
+            FacebookObjectCollection<User> userFriends = SingletonUserInfo.Instance.LoggedInUser.Friends;
 
-            String userName = UserInfo.Instance.LoggedInUser.Name;
-            Image userImage = UserInfo.Instance.LoggedInUser.ImageNormal;
+            String userName = SingletonUserInfo.Instance.LoggedInUser.Name;
+            Image userImage = SingletonUserInfo.Instance.LoggedInUser.ImageNormal;
 
-            UserInfo.Instance.FetchListBox(friendsListBox, userFriends);
+            SingletonUserInfo.Instance.FetchListBox(friendsListBox, userFriends);
             CheckersFacade checkersFacade = new CheckersFacade(userName, userImage, friendsListBox);
 
             checkersFacade.m_PostStatus += postResult;

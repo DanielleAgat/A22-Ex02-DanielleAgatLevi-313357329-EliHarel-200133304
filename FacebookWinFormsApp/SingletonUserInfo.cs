@@ -5,7 +5,7 @@ using FacebookWrapper.ObjectModel;
 
 namespace BasicFacebookFeatures
 {
-    public sealed class UserInfo
+    public sealed class SingletonUserInfo
     {
         private const string k_FailedToGetInfo = "N/A";
         private const string k_NoItemsToShow = "Whoops, there is nothing here, Maybe try to check your permissions";
@@ -13,7 +13,7 @@ namespace BasicFacebookFeatures
         private const string k_FemaleGender = "female";
         private const string k_MaleGender = "male";
         private User m_LoggedInUser;
-        private static UserInfo sr_UserInfo;
+        private static SingletonUserInfo sr_UserInfo;
         private static readonly object sr_Lock = new object();
 
         public User LoggedInUser
@@ -28,12 +28,12 @@ namespace BasicFacebookFeatures
              }
         }
 
-        private UserInfo()
+        private SingletonUserInfo()
         {
         }
 
 
-        public static UserInfo Instance
+        public static SingletonUserInfo Instance
         {
              get
              {
@@ -43,7 +43,7 @@ namespace BasicFacebookFeatures
                        {
                             if (sr_UserInfo == null)
                             {
-                                 sr_UserInfo = new UserInfo();
+                                 sr_UserInfo = new SingletonUserInfo();
                             }
                        }
                   }

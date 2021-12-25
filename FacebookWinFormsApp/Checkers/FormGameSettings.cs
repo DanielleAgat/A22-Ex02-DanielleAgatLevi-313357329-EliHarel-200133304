@@ -17,15 +17,6 @@ namespace CheckersUIWindows
                listBoxFriendsCheckersSettings.Enabled = false;
           }
 
-          public FormGameSettings(UserInfo i_UserInfo)
-          {
-               InitializeComponent();
-               i_UserInfo.FetchListBox(listBoxFriendsCheckersSettings, i_UserInfo.LoggedInUser.Friends);
-               textBoxPlayer1.Text = i_UserInfo.LoggedInUser.Name;
-               listBoxFriendsCheckersSettings.Enabled = false;
-          }
-
-
           public ListBox ListBoxFriendsCheckersSettings
           {
                get
