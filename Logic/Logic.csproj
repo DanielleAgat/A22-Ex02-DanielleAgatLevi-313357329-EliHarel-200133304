@@ -43,7 +43,6 @@
     <Compile Include="BoardGameBuilder\BoardGameComposer.cs" />
     <Compile Include="BoardGameBuilder\CheckersBuilder.cs" />
     <Compile Include="BoardGameBuilder\IBoardGameBuilder.cs" />
-    <Compile Include="BoardGameComposer.cs" />
     <Compile Include="Checkers\AI.cs" />
     <Compile Include="Checkers\Board.cs" />
     <Compile Include="Checkers\BoardPoint.cs" />

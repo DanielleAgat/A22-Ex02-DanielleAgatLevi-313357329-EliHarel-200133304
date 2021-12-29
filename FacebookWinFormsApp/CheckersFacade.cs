@@ -1,4 +1,4 @@
-PostStatususing System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -42,17 +42,12 @@ namespace BasicFacebookFeatures
 
                    if(postResultForm.DialogResult == DialogResult.Yes)
                    {
-                        OnPostStatus();
+                        if (PostStatus != null)
+                        {
+                             PostStatus.Invoke(postResultForm.getMessageToPost());
+                        }
                    }
               }
-         }
-
-         private void OnPostStatus(i_EventArgs e)
-         {
-             if(PostStatus != null)
-             {
-                  PostStatus.Invoke(postResultForm.getMessageToPost());
-             }
          }
     }
 }
