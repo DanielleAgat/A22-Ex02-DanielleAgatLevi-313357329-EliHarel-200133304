@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -52,11 +52,8 @@ namespace CheckersUIWindows
         private CheckBox m_CheckBoxShowPiecesThatCanMove;
         private PictureBox m_PictureBoxPlayer1Profile;
         private PictureBox m_PictureBoxPlayer2Profile;
-
         public event Action TopAnimation;
-
         public event Action BotAnimation;
-
         public event Action MatchEnded;
 
         public FormBoard(FormGameSettings i_GameSettings, Image i_UserImage)
@@ -72,20 +69,14 @@ namespace CheckersUIWindows
             r_GameMode = i_GameSettings.GameMode;
             string player1Name = i_GameSettings.Player1Name;
             string player2Name = i_GameSettings.Player2Name;
-
-            // r_GameEngine = new GameEngine(player1Name, player2Name, r_GameMode, r_BoardSize); // TODO: Delete
-
             CheckersBuilder checkersBuilder = new CheckersBuilder();
 
-            // TODO: consider changing if we think Guy won't like
             checkersBuilder.SetPlayerOneName(player1Name) 
                 .SetPlayerTwoName(player2Name)
                 .SetGameMode(r_GameMode)
                 .SetBoardSize(r_BoardSize);
-
             BoardGameComposer.Compose(checkersBuilder);
             r_GameEngine = checkersBuilder.GetProduct();
-
             generateButtonMatrix();
             generatePieces();
             r_GameEngine.ResetGame();
@@ -163,6 +154,7 @@ namespace CheckersUIWindows
         private void generateButtonMatrix()
         {
             m_ButtonMatrix = new BoardButton[(int)r_BoardSize, (int)r_BoardSize];
+            
             for (int row = 0; row < (int)r_BoardSize; row++)
             {
                 for (int col = 0; col < (int)r_BoardSize; col++)
