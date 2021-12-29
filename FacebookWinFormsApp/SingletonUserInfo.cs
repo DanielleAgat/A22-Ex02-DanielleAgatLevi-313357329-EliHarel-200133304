@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Logic;
 using System.Windows.Forms;
 using FacebookWrapper.ObjectModel;
@@ -52,7 +52,7 @@ namespace BasicFacebookFeatures
              }
         }
 
-          public static string[] SetUsersChosenPermissions(CheckedListBox i_CheckedListBoxPermissions)
+        public static string[] SetUsersChosenPermissions(CheckedListBox i_CheckedListBoxPermissions)
         {
             int checkedItemsCount = i_CheckedListBoxPermissions.CheckedItems.Count;
             string[] permissions = new string[checkedItemsCount + BasicFacebookLogic.sr_ConstantPermissions.Length];
@@ -69,12 +69,8 @@ namespace BasicFacebookFeatures
         {
             if (m_LoggedInUser != null)
             {
-                // io_ListBoxNewsFeed.Items.Clear(); // Old, pre-threads
-
                 io_ListBoxNewsFeed.Invoke(new Action( () => io_ListBoxNewsFeed.Items.Clear()));
-
-                //addPostsToListBox(ref io_ListBoxNewsFeed, m_LoggedInUser.NewsFeed);
-                addPostsToListBox(io_ListBoxNewsFeed, m_LoggedInUser.NewsFeed); // Trying without "ref", because threads didn't allow it
+                addPostsToListBox(io_ListBoxNewsFeed, m_LoggedInUser.NewsFeed);
 
             }
         }
@@ -85,8 +81,6 @@ namespace BasicFacebookFeatures
             {
                 if (post.Message != null)
                 {
-                    // io_ListBox.Items.Add(post.Message);
-
                     io_ListBox.Invoke(new Action(() => io_ListBox.Items.Add(post.Message)));
                 }
             }
@@ -297,13 +291,6 @@ namespace BasicFacebookFeatures
 
         public void FetchEvents(BindingSource i_EventBindingSource, FacebookObjectCollection<Event> i_Events, ListBox i_EventsListBox)
         {
-            // TODO: delete if all else works
-            //i_EventsListBox.Items.Clear();
-            //foreach (Event fbEvent in i_Events)
-            //{
-            //     i_EventsListBox.Items.Add(fbEvent);
-            //}
-
             i_EventBindingSource.DataSource = i_Events;
             VisibilityManager.ChangeListBoxVisibilityAccordingToEmptiness(i_EventsListBox);
         }
