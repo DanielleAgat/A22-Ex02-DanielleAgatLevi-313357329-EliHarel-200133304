@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 using CheckersLogic;
 using BasicFacebookFeatures;
@@ -8,7 +8,6 @@ namespace CheckersUIWindows
 {
      public partial class FormGameSettings : Form
      {
-
           public FormGameSettings(String i_UserName, ListBox i_FriendsListBox)
           {
                InitializeComponent();
