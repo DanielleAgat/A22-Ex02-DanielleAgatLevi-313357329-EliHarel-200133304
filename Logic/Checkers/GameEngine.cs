@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Logic.BoardGameBuilder;
 
@@ -16,11 +16,8 @@ namespace CheckersLogic
         private Player m_PlayerPerformingCapture;
         private Player m_Winner;
         private Player m_Loser;
-
         public event Action AdvancedTurn;
-
         public event Action GameStateChanged;
-
         public event Action PlayerScoreChanged;
 
         public enum eGameState
@@ -56,66 +53,17 @@ namespace CheckersLogic
             Top
         }
 
-        // TODO - delete after builder pattern is implemented and working
-        //public GameEngine(
-        //    string i_Player1Name,
-        //    string i_Player2Name,
-        //    eGameMode i_GameMode,
-        //    Board.eBoardSize i_BoardSize)
-        //{
-        //    const bool v_Human = true;
-        //    ushort numOfPieces = GetNumOfPiecesByBoardSize(i_BoardSize);
-
-        //    r_Board = new Board(i_BoardSize);
-        //    m_Winner = null;
-        //    m_Loser = null;
-        //    m_Turn = 1;
-        //    GameState = eGameState.Ongoing;
-        //    m_PlayerPerformingCapture = null;
-        //    r_BottomPlayer = new Player(i_Player1Name, eSide.Bot, numOfPieces, v_Human);
-        //    r_GameMode = i_GameMode;
-        //    r_Ai = new AI(this);
-        //    if (i_GameMode == eGameMode.SinglePlayer)
-        //    {
-        //        r_TopPlayer = new Player(i_Player2Name, eSide.Top, numOfPieces, !v_Human);
-        //    }
-        //    else
-        //    {
-        //        r_TopPlayer = new Player(i_Player2Name, eSide.Top, numOfPieces, v_Human);
-        //    }
-        //}
-
         internal GameEngine(IBoardGameBuilder i_BoardGameBuilder)
         {
-            // r_Board = new Board(i_BoardSize);
             r_Board = i_BoardGameBuilder.GetBoard();
-
-
-
             m_Winner = null;
             m_Loser = null;
             m_Turn = 1;
             GameState = eGameState.Ongoing;
             m_PlayerPerformingCapture = null;
-
-            // r_BottomPlayer = new Player(i_Player1Name, eSide.Bot, numOfPieces, v_Human);
             r_BottomPlayer = i_BoardGameBuilder.GetPlayerOne();
-
-            //r_GameMode = i_GameMode;
             r_GameMode = i_BoardGameBuilder.GetGameMode();
-
             r_Ai = new AI(this);
-
-
-
-            //if (i_GameMode == eGameMode.SinglePlayer)
-            //{
-            //    r_TopPlayer = new Player(i_Player2Name, eSide.Top, numOfPieces, !v_Human);
-            //}
-            //else
-            //{
-            //    r_TopPlayer = new Player(i_Player2Name, eSide.Top, numOfPieces, v_Human);
-            //}
 
             r_TopPlayer = i_BoardGameBuilder.GetPlayerTwo();
         }

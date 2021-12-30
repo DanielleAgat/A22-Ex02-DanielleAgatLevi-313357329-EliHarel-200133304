@@ -14,11 +14,11 @@ namespace BasicFacebookFeatures.Checkers
     public partial class FormPostResult : Form
     {
         private eGameResult m_GameResult;
-        FormBoard m_CheckersBoard;
-        int m_ScorePlayer1;
-        int m_ScorePlayer2;
-        string m_NamePlayer1;
-        string m_NamePlayer2;
+        private FormBoard m_CheckersBoard;
+        private int m_ScorePlayer1;
+        private int m_ScorePlayer2;
+        private string m_NamePlayer1;
+        private string m_NamePlayer2;
 
         public FormPostResult(FormBoard i_CheckersBoard)
         {

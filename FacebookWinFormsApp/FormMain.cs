@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Threading;
@@ -61,7 +61,6 @@ namespace BasicFacebookFeatures
         {
             // Perform the connect only after the form is shown.
             loadAppSettings();
-
             base.OnShown(i_EventArgs);
         }
 
@@ -105,14 +104,9 @@ namespace BasicFacebookFeatures
         {
             m_UserInfo = SingletonUserInfo.Instance;
             m_UserInfo.LoggedInUser = i_LoginResult.LoggedInUser;
-
             changeLoginButtonAccordingToState(!r_LoginState);
             changeControlsVisibilityAccordingToState(r_LoginState);
             pictureBoxProfilePic.LoadAsync(m_UserInfo.LoggedInUser.PictureNormalURL);
-            // m_UserInfo.FetchNewsFeed(listBoxNewsFeedOld);
-
-
-            // TODO: temp code to experiment with threads
             new Thread(fetchNewsFeed).Start();
             new Thread(fetchPosts).Start();
             new Thread(fetchFriends).Start();
@@ -153,6 +147,7 @@ namespace BasicFacebookFeatures
 
             VisibilityManager.ChangeTabVisibility(r_LikedPagesControls, labelNoLikedPages, isAnyPagesFetched);
         }
+        
         private void fetchEvents()
         {
             fetchAllEvents();
@@ -182,19 +177,6 @@ namespace BasicFacebookFeatures
         {
             buttonLogin.Text = (i_IsLoginState) ? "Login" : $"{m_UserInfo.LoggedInUser.Name}";
             buttonLogin.Enabled = i_IsLoginState;
-        }
-
-        private void fetchInfo() // Not in use - we keep it in case we will want to trigger full fetch in the future
-        {
-            pictureBoxProfilePic.LoadAsync(m_UserInfo.LoggedInUser.PictureNormalURL);
-            m_UserInfo.FetchNewsFeed(listBoxNewsFeedOld);
-            m_UserInfo.FetchPosts(listBoxPosts);
-            fetchUserData();
-            bool isAnyAlbumsFetched = m_UserInfo.FetchListBox(listBoxAlbums, m_UserInfo.LoggedInUser.Albums);
-            bool isAnyPagesFetched = m_UserInfo.FetchListBox(listBoxLikedPages, m_UserInfo.LoggedInUser.LikedPages);
-            bool isAnyFriendsFetched = m_UserInfo.FetchListBox(listBoxFriends, m_UserInfo.LoggedInUser.Friends);
-
-            changeTabsVisibilityAfterFetch(isAnyAlbumsFetched, isAnyPagesFetched, isAnyFriendsFetched);
         }
 
         private void changeTabsVisibilityAfterFetch(bool i_Albums, bool i_LikedPages, bool i_Friends)
@@ -232,7 +214,6 @@ namespace BasicFacebookFeatures
             pictureBoxProfilePic.Image = null;
             changeControlsVisibilityAccordingToState(!r_LoginState);
             listBoxPosts.Items.Clear();
-            //listBoxAlbums.Items.Clear(); // Old code before data binding, delete if all else works
         }
 
         private void buttonLogout_LogoutFailed()
@@ -254,26 +235,6 @@ namespace BasicFacebookFeatures
             }
         }
 
-        //private void listBoxAlbums_SelectedIndexChanged(object i_Sender, EventArgs i_EventArgs)
-        //{
-        //    if (listBoxAlbums.SelectedItems.Count == 1)
-        //    {
-        //        Album selectedAlbum = listBoxAlbums.SelectedItem as Album;
-
-        //        m_UserInfo.FetchAlbumCover(selectedAlbum, pictureBoxAlbumCoverPhoto, pictureBoxProfilePic);
-        //    }
-        //}
-
-        //private void listBoxFriends_SelectedIndexChanged(object i_Sender, EventArgs i_EventArgs)
-        //{
-        //    if (listBoxFriends.SelectedItems.Count == 1)
-        //    {
-        //        User selectedFriend = listBoxFriends.SelectedItem as User;
-
-        //        m_UserInfo.FetchFriendProfilePic(selectedFriend, pictureBoxFriends);
-        //    }
-        //}
-
         private void buttonPublish_Click(object i_Sender, EventArgs i_)
         {
             try
@@ -290,53 +251,17 @@ namespace BasicFacebookFeatures
             }
         }
 
-        // TODO: delete if done updating the two-way data binding panel which has the image already
-        //private void listBoxLikedPages_SelectedIndexChanged(object i_Sender, EventArgs i_)
-        //{
-        //     try
-        //     {
-        //          if (listBoxLikedPages.SelectedItems.Count == 1)
-        //          {
-        //               Page selectedPage = listBoxLikedPages.SelectedItem as Page;
-
-        //               pictureBoxLikedPage.LoadAsync(selectedPage.PictureLargeURL);
-        //          }
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //     }
-        //}
-
-        // TODO: delete if done
-        //private void listBoxEvents_SelectedIndexChanged(object i_Sender, EventArgs i_)
-        //{
-        //     try
-        //     {
-        //          if (listBoxEvents.SelectedItems.Count == 1)
-        //          {
-        //               Event selectedEvent = listBoxEvents.SelectedItem as Event;
-
-        //               pictureBoxEvent.LoadAsync(selectedEvent.Cover.SourceURL);
-        //          }
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //     }
-        //}
-
         private void buttonCheckersLaunch_Click(object i_Sender, EventArgs i_EventArgs)
         {
             ListBox friendsListBox = new ListBox();
-
             FacebookObjectCollection<User> userFriends = m_UserInfo.LoggedInUser.Friends;
-
             String userName = m_UserInfo.LoggedInUser.Name;
             Image userImage = m_UserInfo.LoggedInUser.ImageNormal;
 
             SingletonUserInfo.Instance.FetchListBox(friendsListBox, userFriends);
             CheckersFacade checkersFacade = new CheckersFacade(userName, userImage, friendsListBox);
 
-            checkersFacade.m_PostStatus += postResult;
+            checkersFacade.PostStatus += postResult;
             checkersFacade.LaunchCheckers();
         }
 
@@ -409,51 +334,6 @@ namespace BasicFacebookFeatures
             m_UserInfo.FetchEvents(eventBindingSource, m_UserInfo.LoggedInUser.EventsNotYetReplied, listBoxEventsNotYetReplied);
             m_UserInfo.FetchEvents(eventBindingSource, m_UserInfo.LoggedInUser.Events, listBoxEvents);
 
-        }
-
-        private void tabControlMain_SelectedIndexChanges(object i_Sender, EventArgs i_EventArgs)
-        {
-            switch (tabControlMain.SelectedIndex)
-            {
-                case k_NewsFeedIndex:
-                    //m_UserInfo.FetchNewsFeed(listBoxNewsFeed);
-                    break;
-                case k_PostIndex:
-                    //m_UserInfo.FetchPosts(listBoxPosts);
-                    break;
-                case k_AlbumIndex:
-                    //bool isAnyAlbumsFetched = m_UserInfo.FetchListBox(albumBindingSource, listBoxAlbums, m_UserInfo.LoggedInUser.Albums);
-
-                    //VisibilityManager.ChangeTabVisibility(r_AlbumsControls, labelNoItemsAlbums, isAnyAlbumsFetched);
-                    break;
-                case k_EventsIndex:
-                    //fetchAllEvents();
-                    break;
-                case k_FriendsIndex:
-
-                    // TODO: delete after adding threads
-                    //bool isAnyFriendsFetched = m_UserInfo.FetchListBox(userBindingSource, listBoxFriends, m_UserInfo.LoggedInUser.Friends);
-
-                    //VisibilityManager.ChangeTabVisibility(r_FriendsControls, labelNoFriends, isAnyFriendsFetched);
-                    break;
-                case k_HoroscopeIndex:
-                    //FacebookObjectCollection<User> usersToSend = getCollectionOfUserAndFriends(); // Add logged in user to top of list
-
-                    //bool isAnyFriendsFetched = m_UserInfo.FetchListBox(listBoxFriendsHoroscope, usersToSend);
-                    //listBoxFriendsHoroscope.SelectedIndex = 0;
-                    //listBoxHoroscopeDay.SelectedIndex = 0;
-                    break;
-                case k_UserInfoIndex:
-                    //fetchUserData();
-                    break;
-                case k_LikedPagesIndex:
-                    //bool isAnyPagesFetched = m_UserInfo.FetchListBox(pageBindingSource, listBoxLikedPages, m_UserInfo.LoggedInUser.LikedPages);
-
-                    //VisibilityManager.ChangeTabVisibility(r_LikedPagesControls, labelNoLikedPages, isAnyPagesFetched);
-                    break;
-                default:
-                    break;
-            }
         }
 
         private FacebookObjectCollection<User> getCollectionOfUserAndFriends()

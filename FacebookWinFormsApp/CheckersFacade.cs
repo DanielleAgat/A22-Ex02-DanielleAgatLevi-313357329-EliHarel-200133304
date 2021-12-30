@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -17,7 +17,7 @@ namespace BasicFacebookFeatures
          private string m_LaunchingPlayerName;
          private Image m_UserImage;
          private ListBox m_FriendsListBox;
-         public event Action<String> m_PostStatus;
+         public event Action<String> PostStatus;
 
          public CheckersFacade(String i_LaunchingPlayerName, Image i_UserImage, ListBox i_FriendsListBox)
          {
@@ -42,9 +42,9 @@ namespace BasicFacebookFeatures
 
                    if(postResultForm.DialogResult == DialogResult.Yes)
                    {
-                        if(m_PostStatus != null)
+                        if (PostStatus != null)
                         {
-                             m_PostStatus.Invoke(postResultForm.getMessageToPost());
+                             PostStatus.Invoke(postResultForm.getMessageToPost());
                         }
                    }
               }
