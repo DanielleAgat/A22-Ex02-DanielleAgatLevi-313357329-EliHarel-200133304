@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CheckersLogic;
+﻿using CheckersLogic;
 
 namespace Logic.BoardGameBuilder
 {
-    public class CheckersBuilder : IBoardGameBuilder
+    public class CheckersBuilder : BoardGameBuilder
     {
         private string m_PlayerOneName;
         private string m_PlayerTwoName;
@@ -46,7 +41,7 @@ namespace Logic.BoardGameBuilder
             return this;
         }
 
-        public GameEngine.eGameMode GetGameMode()
+        public override GameEngine.eGameMode GetGameMode()
         {
             return m_GameMode;
         }
@@ -58,27 +53,27 @@ namespace Logic.BoardGameBuilder
             return this;    
         }
 
-        public Board GetBoard()
+        public override Board GetBoard()
         {
             return m_Board;
         }
 
-        public Player GetPlayerOne()
+        public override Player GetPlayerOne()
         {
             return m_Player1;
         }
 
-        public Player GetPlayerTwo()
+        public override Player GetPlayerTwo()
         {
             return m_Player2;
         }
 
-        public void BuildBoard()
+        public override void BuildBoard()
         {
             m_Board = new Board(m_BoardSize);
         }
 
-        public void BuildPlayerOne()
+        public override void BuildPlayerOne()
         {
             ushort numOfPieces = GameEngine.GetNumOfPiecesByBoardSize(m_BoardSize);
             const bool v_Human = true;
@@ -86,7 +81,7 @@ namespace Logic.BoardGameBuilder
             m_Player1 = new Player(m_PlayerOneName, GameEngine.eSide.Bot, numOfPieces, v_Human);
         }
 
-        public void BuildPlayerTwo()
+        public override void BuildPlayerTwo()
         {
             ushort numOfPieces = GameEngine.GetNumOfPiecesByBoardSize(m_BoardSize);
             bool isHuman = m_GameMode == GameEngine.eGameMode.MultiPlayer;

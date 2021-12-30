@@ -53,7 +53,7 @@ namespace CheckersLogic
             Top
         }
 
-        internal GameEngine(IBoardGameBuilder i_BoardGameBuilder)
+        internal GameEngine(BoardGameBuilder i_BoardGameBuilder)
         {
             r_Board = i_BoardGameBuilder.GetBoard();
             m_Winner = null;
