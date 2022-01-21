@@ -69,13 +69,15 @@ namespace CheckersUIWindows
             r_GameMode = i_GameSettings.GameMode;
             string player1Name = i_GameSettings.Player1Name;
             string player2Name = i_GameSettings.Player2Name;
+
             CheckersBuilder checkersBuilder = new CheckersBuilder();
 
             checkersBuilder.SetPlayerOneName(player1Name) 
                 .SetPlayerTwoName(player2Name)
                 .SetGameMode(r_GameMode)
                 .SetBoardSize(r_BoardSize);
-            BoardGameComposer.Compose(checkersBuilder);
+            new BoardGameDirector(checkersBuilder).Construct();
+
             r_GameEngine = checkersBuilder.GetProduct();
             generateButtonMatrix();
             generatePieces();
