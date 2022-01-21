@@ -233,53 +233,18 @@ namespace BasicFacebookFeatures
           {
                FetchPersonalInfo fetch = new FetchPersonalInfo(() => (m_LoggedInUser.Hometown?.Name));
                fetch.Fetch(io_LabelHomeTown);
-               /*try
-               {
-                    io_LabelEducation.Text = m_LoggedInUser.Hometown?.Name;
-               }
-               catch(Exception exception)
-               {
-                    io_LabelEducation.Text = k_FailedToGetInfo;
-               }*/
           }
 
           public void FetchInterestedIn(Label io_LabelInterestedIn)
           {
                FetchPersonalInfo fetch = new FetchPersonalInfo(() => (m_LoggedInUser.InterestedIn?.ToString()));
                fetch.Fetch(io_LabelInterestedIn);
-               /*try
-               {
-                    io_LabelInterestedIn.Text = m_LoggedInUser.InterestedIn?.ToString();
-               }
-               catch(Exception e)
-               {
-                    io_LabelInterestedIn.Text = k_FailedToGetInfo;
-               }*/
           }
 
           public void FetchGender(Label io_LabelGender)
           {
                FetchPersonalInfo fetch = new FetchPersonalInfo(getGender);
                fetch.Fetch(io_LabelGender);
-               /*try
-               {
-                    switch(m_LoggedInUser.Gender)
-                    {
-                         case User.eGender.female:
-                              io_LabelGender.Text = k_FemaleGender;
-                              break;
-                         case User.eGender.male:
-                              io_LabelGender.Text = k_MaleGender;
-                              break;
-                         default:
-                              io_LabelGender.Text = k_IrrelevantGender;
-                              break;
-                    }
-               }
-               catch(Exception e)
-               {
-                    io_LabelGender.Text = k_FailedToGetInfo;
-               }*/
           }
 
           private string getGender()
@@ -305,14 +270,6 @@ namespace BasicFacebookFeatures
           {
                FetchPersonalInfo fetch = new FetchPersonalInfo(() => (m_LoggedInUser.Email));
                fetch.Fetch(io_LabelEmail);
-               /*try
-               {
-                    io_LabelEmail.Text = m_LoggedInUser.Email;
-               }
-               catch(Exception e)
-               {
-                    io_LabelEmail.Text = k_FailedToGetInfo;
-               }*/
           }
 
           public void FetchEvents(
