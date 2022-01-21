@@ -188,12 +188,12 @@ namespace BasicFacebookFeatures
 
         private void fetchUserData()
         {
-            m_UserInfo.FetchUserEducation(ref labelEducationText);
-            m_UserInfo.FetchHometown(ref labelHometownText);
-            m_UserInfo.FetchBirthday(ref labelBirthdayText);
-            m_UserInfo.FetchGender(ref labelGenderText);
-            m_UserInfo.FetchEmail(ref labelEmailText);
-            m_UserInfo.FetchInterestedIn(ref labelInterestedInText);
+            m_UserInfo.FetchUserEducation(labelEducationText);
+            m_UserInfo.FetchHometown(labelHometownText);
+            m_UserInfo.FetchBirthday(labelBirthdayText);
+            m_UserInfo.FetchGender(labelGenderText);
+            m_UserInfo.FetchEmail(labelEmailText);
+            m_UserInfo.FetchInterestedIn(labelInterestedInText);
         }
 
         private void buttonLogout_Click(object i_Sender, EventArgs i_EventArgs)
