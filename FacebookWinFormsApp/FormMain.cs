@@ -157,7 +157,7 @@ namespace BasicFacebookFeatures
         {
             fetchUserData();
         }
-
+        
         private void fetchHoroscope()
         {
             FacebookObjectCollection<User> usersToSend = getCollectionOfUserAndFriends(); // Add logged in user to top of list
@@ -258,7 +258,11 @@ namespace BasicFacebookFeatures
             String userName = m_UserInfo.LoggedInUser.Name;
             Image userImage = m_UserInfo.LoggedInUser.ImageNormal;
 
-            SingletonUserInfo.Instance.FetchListBox(friendsListBox, userFriends);
+            foreach (User user in userFriends)
+            {
+                friendsListBox.Items.Add(user);
+            }
+
             CheckersFacade checkersFacade = new CheckersFacade(userName, userImage, friendsListBox);
 
             checkersFacade.PostStatus += postResult;

@@ -1,6 +1,11 @@
-﻿namespace CheckersLogic
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace CheckersLogic
 {
-    public class Board
+    public class Board : IEnumerable<Board.Tile>
     {
         private readonly Tile[,] r_TilesMatrix;
 
@@ -9,14 +14,6 @@
             Small = 6,
             Normal = 8,
             Big = 10
-        }
-
-        public Tile[,] Tiles
-        {
-            get
-            {
-                return r_TilesMatrix;
-            }
         }
 
         public struct Tile
@@ -298,6 +295,61 @@
             }
 
             return relativeLocation;
+        }
+
+        public IEnumerator<Board.Tile> GetEnumerator()
+        {
+            return new BoardIterator(this);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        private class BoardIterator : IEnumerator<Board.Tile>
+        {
+            private int m_CurrenTileNum;
+            private readonly Board r_Board;
+
+            public BoardIterator(Board i_Board)
+            {
+                r_Board = i_Board;
+                Reset();
+            }
+
+            public Tile Current
+            {
+                get
+                {
+                    Tile currentTile;
+                    int neededRow = m_CurrenTileNum / (int)r_Board.Size;
+                    int neededCol = m_CurrenTileNum % (int)r_Board.Size;
+
+                    currentTile = r_Board.r_TilesMatrix[neededRow, neededCol];
+
+                    return currentTile;
+                }
+            }
+
+            object IEnumerator.Current => Current;
+
+            public void Dispose()
+            {
+                Reset();
+            }
+
+            public bool MoveNext()
+            {
+                m_CurrenTileNum++;
+
+                return m_CurrenTileNum < r_Board.r_TilesMatrix.Length;
+            }
+
+            public void Reset()
+            {
+                m_CurrenTileNum = -1;
+            }
         }
     }
 }
