@@ -316,7 +316,7 @@ namespace BasicFacebookFeatures
                }
           }
 
-          public class FetchPersonalInfo
+          private class FetchPersonalInfo
           {
                private Func<string> getInfoFunc { get; set; }
 
